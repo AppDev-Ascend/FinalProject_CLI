@@ -10,5 +10,6 @@ A repository for the CLI version of the final project. Used for testing the Chat
    Please contact me when you need our API Key.
 
    (Note: Please do not put the API Key anywhere on the code repository.)
-2. Install the OpenAI module:
+2. Install the Dependencies:
    - pip install openai
+   - pip install python-dotenv
