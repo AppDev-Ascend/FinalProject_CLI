@@ -1,5 +1,5 @@
 # FinalProject-CLI
-A repository for the CLI version of the final project. Used for testing the ChatGPT API
+A Command Line Interface (CLI) version of the assessment generator to make the interaction easier with the ChatGPT API during the testing of prompts.
 
 # Setup 
 1. Setup your ChatGPT API Key
