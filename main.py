@@ -91,6 +91,11 @@ user_input = {
 }
 
 
+# True or False, Identification, Fill in the Blanks
+# Format of the JSON
+# Safeguard JSON format
+
+
 # API Call
 completion = client.chat.completions.create(
   model="gpt-4-1106-preview",
