@@ -93,7 +93,7 @@ user_input = {
 
 # API Call
 completion = client.chat.completions.create(
-  model="gpt-3.5-turbo",
+  model="gpt-4-1106-preview",
   messages=[
     {
         "role": "system", 
@@ -101,7 +101,12 @@ completion = client.chat.completions.create(
                     You must output the the assessment in JSON format.\
                     "
     },
-    {"role": "user", "content": "Compose an assessment for this topic {user_input['Lesson']}. The number of questions should be {user_input['Number of Questions'] and the type of assessment should be {user_input['Type of Assesment']"}
+    {
+        "role": "user", 
+        "content": "Compose an assessment for this topic {user_input['Lesson']}. \
+                    The number of questions should be {user_input['Number of Questions'] \
+                    and the type of assessment should be {user_input['Type of Assesment']"
+    }
   ]
 )
 
