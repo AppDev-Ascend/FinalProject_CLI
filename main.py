@@ -1,13 +1,7 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
-
-# Load environment variables from .env file
-load_dotenv()
-
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-
-client = OpenAI(api_key=OPENAI_API_KEY)
+from assessment_generator import AI
 
 
 pattern_description = """
@@ -90,31 +84,15 @@ user_input = {
     "Number of Questions": 2,
 }
 
+print("Assessment Generator CLI")
 
-# True or False, Identification, Fill in the Blanks
-# Format of the JSON
-# Safeguard JSON format
+# user_input["Lesson"] = input("Enter Lesson: ")
+user_input["Lesson"] = pattern_description
+user_input["Type of Assessment"] = input("Enter Type of Assessment: ")
+user_input["Number of Questions"] = input("Enter Number of Questions: ")
 
+ai = AI()
 
-# API Call
-completion = client.chat.completions.create(
-  model="gpt-4-1106-preview",
-  messages=[
-    {
-        "role": "system", 
-        "content": f"You are an assessment generator. You are given a a c and you must generate an assessment for it. \
-                    You must output the the assessment in JSON format.\
-                    "
-    },
-    {
-        "role": "user", 
-        "content": "Compose an assessment for this topic {user_input['Lesson']}. \
-                    The number of questions should be {user_input['Number of Questions'] \
-                    and the type of assessment should be {user_input['Type of Assesment']"
-    }
-  ]
-)
+output_json = ai.get_assessment(user_input["Lesson"], user_input["Type of Assessment"], int(user_input["Number of Questions"]))
 
-
-# Generate Result
-print(completion.choices[0].message)
+print(output_json)
