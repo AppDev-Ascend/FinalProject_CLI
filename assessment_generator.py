@@ -24,7 +24,7 @@ class AI:
                     {
                         "question": "Question 1",
                         "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
-                        "answer": "Option 1"
+                        "answer": 1,
                     },]
                 }
             
@@ -71,25 +71,33 @@ class AI:
                     {
                         "role": "system", 
                         "content": f"You are an assessment generator. You are given a lesson and you must generate an assessment for it. \
-                                    You must output the the assessment in JSON format.\
+                                        You must output the the assessment in JSON format.\
                                     "
                     },
-                    {"role": "user", "content": "Compose an assessment for this lesson {lesson}. \n \
-                                                 The assessment should consist {number_of_questions} {assessment_type} questions. \
-                                                 It should follow these learning outcomes: {learning_outcomes}. \n \
-                                                 Lastly, the output must be a JSON in this format: {json_data}" }
+                    {
+                        "role": "user", 
+                        "content": f"Compose an assessment for this lesson {lesson}. \n \
+                                    The assessment should consist {number_of_questions} {assessment_type} questions. \
+                                    It should follow these learning outcomes: {learning_outcomes}. \n \
+                                    Lastly, the output must be a JSON in this format: {json_data}" }
                     ]
                 )
 
             # Generate Result
-            assessment = completion.choices[0].message
-            print(completion.choices[0].message)
+            assessment = completion.choices[0].message.content
 
             # Check if result is in the correct format
             is_valid = True
 
-        # Save assessment to a json file once it is valid
-            with open('assessment.json', 'w') as f:
-                json.dump(assessment, f)
+        # Convert assessment to JSON
+        try:
+            assessment_json = json.loads(assessment)
+        except json.JSONDecodeError:
+            print("Error: Assessment is not in valid JSON format")
+            assessment_json = {}
+
+        # Save assessment to a json file
+        with open('assessment.json', 'w') as f:
+            json.dump(assessment_json, f)
 
         return assessment
