@@ -78,6 +78,11 @@ Conclusion:
 The Prototype Design Pattern is a powerful tool for creating objects efficiently, especially in scenarios where the cost of object creation is high. By providing a mechanism for object cloning, it promotes flexibility and dynamic object creation at runtime. Understanding and applying this pattern can lead to more maintainable and scalable code.
 """
 
+learning_outcomes = """
+    1. Define the Prototype Design Pattern and articulate its fundamental principles.
+    2. Differentiate the Prototype Pattern from other creational design patterns, such as the Singleton and Factory Method patterns.
+"""
+
 user_input = {
     "Lesson": pattern_description,
     "Type of Assesment": "Multiple Choice",
@@ -93,6 +98,6 @@ user_input["Number of Questions"] = input("Enter Number of Questions: ")
 
 ai = AI()
 
-output_json = ai.get_assessment(user_input["Lesson"], user_input["Type of Assessment"], int(user_input["Number of Questions"]))
+output_json = ai.get_assessment(user_input["Lesson"], user_input["Type of Assessment"], int(user_input["Number of Questions"]), learning_outcomes)
 
 print(output_json)

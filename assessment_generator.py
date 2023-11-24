@@ -10,8 +10,11 @@ class AI:
       load_dotenv()
       OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
       self.client = OpenAI(api_key=OPENAI_API_KEY)
+      
 
-    def get_assessment(self, lesson, assessment_type, number_of_questions) -> dict:
+    def get_assessment(self, lesson, assessment_type, number_of_questions, learning_outcomes) -> dict:
+        
+        assessment = ""
 
         match assessment_type:
             case "Multiple Choice":
@@ -59,7 +62,7 @@ class AI:
         json_string = json.dumps(json_data)
 
         is_valid = False
-        while(is_valid):
+        while(not is_valid):
             # API Call
             if json_data is not None:
                 completion = self.client.chat.completions.create(
@@ -67,12 +70,14 @@ class AI:
                     messages=[
                     {
                         "role": "system", 
-                        "content": f"You are an assessment generator. You are given a a c and you must generate an assessment for it. \
+                        "content": f"You are an assessment generator. You are given a lesson and you must generate an assessment for it. \
                                     You must output the the assessment in JSON format.\
                                     "
                     },
-                    {"role": "user", "content": "Compose an assessment for this {lesson} using {assessment_type} with {number_of_questions} questions. \
-                                                    The output must be in this format {json}" }
+                    {"role": "user", "content": "Compose an assessment for this lesson {lesson}. \n \
+                                                 The assessment should consist {number_of_questions} {assessment_type} questions. \
+                                                 It should follow these learning outcomes: {learning_outcomes}. \n \
+                                                 Lastly, the output must be a JSON in this format: {json_data}" }
                     ]
                 )
 
@@ -83,9 +88,8 @@ class AI:
             # Check if result is in the correct format
             is_valid = True
 
+        # Save assessment to a json file once it is valid
+            with open('assessment.json', 'w') as f:
+                json.dump(assessment, f)
+
         return assessment
-    
-
-
-
-
