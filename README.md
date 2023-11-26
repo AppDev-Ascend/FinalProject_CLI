@@ -1,6 +1,16 @@
 # FinalProject-CLI
 A repository for the CLI version of the final project. Used for testing the ChatGPT API.
 
+## To do (Delete this after finishing)
+- [ ] Add File Upload Option (.txt)
+- [ ] Add FIle Upload Option (.pdf)
+- [ ] Add PDF to Text Converter Class
+- [ ] Add Txt to Text Converter
+- [ ] Add Saving Assessments to different File Types Class
+- [ ] Convert Assessment to PDF
+- [ ] Convert Assessment to GIFT
+- [ ] Add Different Assessment Types
+
 ## Setup 
 1. **Setup your ChatGPT API Key:**
    - Open the command prompt in your project directory and enter the following command:
