@@ -34,4 +34,4 @@ for i in range(number_of_outcomes):
 ai = AI()
 assessment_json = ai.get_assessment(lesson_in_text, assessment_type, question_number, learning_outcomes)
 
-print(assessment_json[0])
+print(f"Assessment Type: {assessment_json['type']}")

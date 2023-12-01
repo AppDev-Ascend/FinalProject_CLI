@@ -12,11 +12,4 @@ class Converter:
             text += f'\nPage {i + 1}:\n\n'
             text += pytesseract.image_to_string(img, lang='eng')
 
-
-        # For testing purposes, delete later once you are sure it works
-        with open('output.txt', 'w') as f:
-            f.write(text)
-
-        return text
-
         return text

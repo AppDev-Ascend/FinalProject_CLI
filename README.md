@@ -22,11 +22,11 @@
    - If you encounter issues related to Tesseract during the project, ensure that the Tesseract executable is accessible and correctly configured in your code.
 
 ## To do (Delete this after finishing)
-- [ ] Add File Upload Option (.txt)
-- [ ] Add FIle Upload Option (.pdf)
-- [ ] Add PDF to Text Converter Class
-- [ ] Add Txt to Text Converter
+- [X] Add File Upload Option (.txt)
+- [X] Add FIle Upload Option (.pdf)
+- [X] Add PDF to Text Converter Class
+- [X] Add Txt to Text Converter
+- [X] Convert Assessment to a JSON
 - [ ] Add Saving Assessments to different File Types Class
-- [ ] Convert Assessment to PDF
-- [ ] Convert Assessment to GIFT
-- [ ] Add Different Assessment Types
+  - [ ] Convert Assessment to PDF
+  - [ ] Convert Assessment to GIFT
