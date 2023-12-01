@@ -13,7 +13,7 @@ class AI:
       
 
     def get_assessment(self, lesson, assessment_type, number_of_questions, learning_outcomes) -> dict:
-        
+        print("\n\nGenerating Assessment...\n\n")
         assessment = ""
 
         match assessment_type:
@@ -70,16 +70,14 @@ class AI:
                     messages=[
                     {
                         "role": "system", 
-                        "content": f"You are an assessment generator. You are given a lesson and you must generate an assessment for it. \
-                                        You must output the the assessment in JSON format.\
-                                    "
+                        "content": f"You are an assessment generator. You are given a lesson and you must generate an assessment for it following these learning outcomes: \n {learning_outcomes} \n \
+                                    You must output it in a JSON format."
                     },
                     {
                         "role": "user", 
                         "content": f"Compose an assessment for this lesson {lesson}. \n \
-                                    The assessment should consist {number_of_questions} {assessment_type} questions. \
-                                    It should follow these learning outcomes: {learning_outcomes}. \n \
-                                    Lastly, the output must be a JSON in this format: {json_data}" }
+                                    The assessment should consist {number_of_questions} {assessment_type} questions \n \
+                                    The assessment should be in a JSON that follows this format {json_data}" }
                     ]
                 )
 
@@ -89,15 +87,14 @@ class AI:
             # Check if result is in the correct format
             is_valid = True
 
-        # Convert assessment to JSON
-        try:
-            assessment_json = json.loads(assessment)
-        except json.JSONDecodeError:
-            print("Error: Assessment is not in valid JSON format")
-            assessment_json = {}
+        
+        print(assessment)
 
-        # Save assessment to a json file
-        with open('assessment.json', 'w') as f:
-            json.dump(assessment_json, f)
+        assessment_json = json.dumps(assessment)
+        
 
-        return assessment
+        # # Save assessment to a json file
+        # with open('assessment.json', 'w') as f:
+        #     f.write(assessment_json)
+
+        return assessment_json
