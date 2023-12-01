@@ -1,16 +1,3 @@
-# FinalProject-CLI
-A repository for the CLI version of the final project. Used for testing the ChatGPT API.
-
-## To do (Delete this after finishing)
-- [ ] Add File Upload Option (.txt)
-- [ ] Add FIle Upload Option (.pdf)
-- [ ] Add PDF to Text Converter Class
-- [ ] Add Txt to Text Converter
-- [ ] Add Saving Assessments to different File Types Class
-- [ ] Convert Assessment to PDF
-- [ ] Convert Assessment to GIFT
-- [ ] Add Different Assessment Types
-
 ## Setup 
 1. **Setup your ChatGPT API Key:**
    - Open the command prompt in your project directory and enter the following command:
@@ -26,3 +13,20 @@ A repository for the CLI version of the final project. Used for testing the Chat
      pip install -r requirements.txt
      ```
      This command installs the required packages listed in the `requirements.txt` file. Ensure that you have the appropriate permissions and are in the correct virtual environment before running this command.
+
+3. **Install Tesseract OCR:**
+   - Download and install Tesseract OCR from the [official Tesseract GitHub page](https://github.com/tesseract-ocr/tesseract).
+   - Add the directory containing `tesseract.exe` to your system's PATH for global usage.
+
+4. **Additional Notes:**
+   - If you encounter issues related to Tesseract during the project, ensure that the Tesseract executable is accessible and correctly configured in your code.
+
+## To do (Delete this after finishing)
+- [ ] Add File Upload Option (.txt)
+- [ ] Add FIle Upload Option (.pdf)
+- [ ] Add PDF to Text Converter Class
+- [ ] Add Txt to Text Converter
+- [ ] Add Saving Assessments to different File Types Class
+- [ ] Convert Assessment to PDF
+- [ ] Convert Assessment to GIFT
+- [ ] Add Different Assessment Types
