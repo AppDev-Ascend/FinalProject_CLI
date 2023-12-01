@@ -37,7 +37,7 @@ print("Assessment Generator CLI")
 # # Generate the Lesson
 # assessment_json = ai.get_assessment(lesson_in_text, assessment_type, question_number, learning_outcomes)
 
-# print(f"Assessment Type: {assessment_json['type']}")
+# print(f"{assessment_json}")
 
 # For testing purposes, we will use the sample assessment
 with open('assessment.json', 'r') as f:

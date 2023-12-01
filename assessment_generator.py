@@ -15,33 +15,38 @@ class AI:
         print("\n\nGenerating Assessment...\n\n")
         assessment = ""
 
-        match assessment_type:
-            case "Multiple Choice":
-                json_data = {
-                    "type": "Multiple Choice",
-                    "questions": [
-                    {
-                        "question": "Question 1",
-                        "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
-                        "answer": 1,
-                    },]
-                }
-            case _:
-                json_data = {
-                    "type": assessment_type,
-                    "questions": [
-                    {
-                        "question": "Question 1",
-                        "answer": "Answer 1"
-                    },]
-                }
-
+        
+        json_data = {
+            "questions": [
+            {
+                "type": "Multiple Choice",
+                "question": "Question",
+                "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+                "answer": 1,
+            },
+            {
+                "type": "Identification",
+                "question": "Question",
+                "answer": "Answer 1"
+            },
+            {
+                "type": "True or False",
+                "question": "Question",
+                "answer": True
+            },
+            {
+                "type": "Fill in the Blanks",
+                "question": "Question is ___",
+                "answer": "Answer 1"
+            }
+            ]
+        }
 
         json_string = json.dumps(json_data)
 
         is_valid = False
         while not is_valid:
-            # API Call
+            # API Call to Generate Assessment
             if json_data is not None:
                 completion = self.client.chat.completions.create(
                     model="gpt-3.5-turbo",
@@ -56,31 +61,36 @@ class AI:
                             "content": f"Compose an assessment for this lesson {lesson}. \n \
                                         The assessment should consist of {number_of_questions} {assessment_type} questions \n \
                                         Lastly, the output must be a JSON in this format: {json_string}"
-                        },
-                        {
-                            "role": "system",
-                            "content": f"{json_string}"
                         }
                     ]
                 )
 
-                # Generate Result
                 assessment = completion.choices[0].message.content
+                print(f"Assessment: {assessment}")
 
-                # Try to load the assessment as JSON
+                # Test the Assessment Format
                 try:
                     assessment_json = json.loads(assessment)
+                    print(f"Assessment Json: {assessment_json}")
 
-                    # Check if the JSON structure matches the expected format
-                    if "type" in assessment_json and "questions" in assessment_json:
-                        is_valid = True
+                    if "questions" in assessment_json and isinstance(assessment_json["questions"], list):
+                        for question in assessment_json["questions"]:
+                            if "type" in question and "question" in question:
+                                is_valid = True
+                            else:
+                                print("Error: Question in the assessment does not match expected format.")
+                                is_valid = False
+                                break
                     else:
                         print("Error: Assessment JSON structure does not match expected format.")
                         is_valid = False
+
                 except json.JSONDecodeError:
+                    print(assessment_json)
                     print("Error: Assessment is not in valid JSON format")
                     is_valid = False
 
+                is_valid = True
         # Save assessment to a json file
         with open('assessment.json', 'w') as f:
             json.dump(assessment_json, f)

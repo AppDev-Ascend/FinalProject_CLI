@@ -28,7 +28,10 @@
 - [X] Add Txt to Text Converter
 - [X] Convert Assessment to a JSON
 - [X] Add Saving Assessments to different File Types Class
-- [X] Convert Assessment to PDF
-- [X] Convert Assessment to GIFT
-- [ ] Convert Assessment to PDF for the other 3 Assessment Types
-- [ ] Convert Assessment to GIFT for the other 3 Assessment Types
+- [X] Convert Assessment (JSON) to PDF
+- [X] Convert Assessment (JSON) to GIFT
+- [ ] Update JSON File
+   - [ ] Check Format of New Assessment File Type
+   - [ ] Update JSON to PDF for the new JSON Format
+   - [ ] Update JSON to GIFT for the new JSON Format
+- [ ] Update Query to Check if there are Learning Outcomes

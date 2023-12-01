@@ -1,55 +1,29 @@
 {
-    "type": "Multiple Choice",
     "questions": [
         {
-            "question": "What is the purpose of the Prototype pattern?",
-            "options": [
-                "To create new objects from scratch",
-                "To copy an existing object as a blueprint for creating new objects",
-                "To reduce the complexity of object creation",
-                "To maintain object relationships"
-            ],
-            "answer": 2
+            "type": "Fill in the Blanks",
+            "question": "The first example of the Prototype pattern was in _____ system in 1964.",
+            "answer": "Ivan Sutherland's Sketchpad System"
         },
         {
-            "question": "Which component is responsible for creating new objects using the Prototype pattern?",
-            "options": [
-                "Prototype",
-                "Concrete Prototype",
-                "Client",
-                "Prototype Registry"
-            ],
-            "answer": 3
+            "type": "Fill in the Blanks",
+            "question": "The Gang of Four popularized and codified the Prototype Pattern in their book _______.",
+            "answer": "Design Patterns: Elements of Reusable Object-Oriented Software"
         },
         {
-            "question": "When is the Prototype pattern useful?",
-            "options": [
-                "When object creation is more efficient by copying an existing object",
-                "When a class cannot anticipate the type of objects it must create",
-                "When configuring complex objects with different properties",
-                "All of the above"
-            ],
-            "answer": 4
+            "type": "Fill in the Blanks",
+            "question": "A prototype pattern is a ______ design pattern that focuses on creating objects by copying an existing object.",
+            "answer": "creational"
         },
         {
-            "question": "What are the pros of using the Prototype pattern?",
-            "options": [
-                "Object creation efficiency and flexible object creation",
-                "Reduced complexity and maintains object relationships",
-                "Efficient cloning and reduced need for proper initialization",
-                "All of the above"
-            ],
-            "answer": 4
+            "type": "Fill in the Blanks",
+            "question": "In the Prototype Pattern, a prototype object serves as a ________, and new objects are created by duplicating this prototype.",
+            "answer": "blueprint"
         },
         {
-            "question": "What are the cons of using the Prototype pattern?",
-            "options": [
-                "Cloning complexity and potential for inefficient cloning",
-                "Need for proper initialization and maintaining prototypes",
-                "Object creation efficiency and reduced complexity",
-                "All of the above"
-            ],
-            "answer": 1
+            "type": "Fill in the Blanks",
+            "question": "The _________ is responsible for creating new objects by requesting the prototype to clone itself.",
+            "answer": "client"
         }
     ]
 }

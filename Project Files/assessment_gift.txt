@@ -1,17 +1,17 @@
-::Multiple Choice::
+::::
 
-::1 What is the purpose of the Prototype pattern?::
-~To create new objects from scratch =To copy an existing object as a blueprint for creating new objects ~To reduce the complexity of object creation ~To maintain object relationships 
+::1 The first example of the Prototype pattern was in _____ system in 1964.::
 
-::2 Which component is responsible for creating new objects using the Prototype pattern?::
-~Prototype ~Concrete Prototype =Client ~Prototype Registry 
 
-::3 When is the Prototype pattern useful?::
-~When object creation is more efficient by copying an existing object ~When a class cannot anticipate the type of objects it must create ~When configuring complex objects with different properties =All of the above 
+::2 The Gang of Four popularized and codified the Prototype Pattern in their book _______.::
 
-::4 What are the pros of using the Prototype pattern?::
-~Object creation efficiency and flexible object creation ~Reduced complexity and maintains object relationships ~Efficient cloning and reduced need for proper initialization =All of the above 
 
-::5 What are the cons of using the Prototype pattern?::
-=Cloning complexity and potential for inefficient cloning ~Need for proper initialization and maintaining prototypes ~Object creation efficiency and reduced complexity ~All of the above 
+::3 A prototype pattern is a ______ design pattern that focuses on creating objects by copying an existing object.::
+
+k; 
+::4 In the Prototype Pattern, a prototype object serves as a ________, and new objects are created by duplicating this prototype.::
+
+
+::5 The _________ is responsible for creating new objects by requesting the prototype to clone itself.::
+
 
