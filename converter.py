@@ -16,35 +16,33 @@ class Converter:
             text += f'\nPage {i + 1}:\n\n'
             text += pytesseract.image_to_string(img, lang='eng')
 
-        with open(r'Project Files\output.txt', 'w') as f:
-                f.write(text)
-        return text
-
     @staticmethod
-    def json_to_pdf(assessment):
+    def json_to_pdf(assessment, type):
         # Create a PDF document
-        pdf_canvas = canvas.Canvas(r"Project Files\assessment.pdf", pagesize=letter)
+        pdf_canvas = canvas.Canvas(rf"Project Files\assessment_{type}.pdf", pagesize=letter)
+
+        pdf_canvas.setFont("Helvetica-Bold", 14)
+        pdf_canvas.drawString(50, 770, f"{type}")
+        pdf_canvas.setFont("Helvetica", 12)
+
 
         # Extract information from the JSON
         questions = assessment.get("questions", [])
-        Converter.generate_answer_key(questions)
 
         # Add content to the PDF
         pdf_canvas.setFont("Helvetica", 12)
 
         y_position = 750  # Adjusted starting position
         x_position = 50  # Adjusted starting position on the x-axis
-        line_height = 15  # Adjusted line height
-        max_line_length = 100  # Adjusted maximum line length
+        line_height = 10  # Adjusted line height
+        max_line_length = 80  # Adjusted maximum line length
 
         for index, question in enumerate(questions, start=1):
             y_position -= 2 * line_height  # Adjust the vertical position for each question
 
-            question_type = question.get("type", "")
             question_text = question.get("question", "")
-            answer = question.get("answer", "")
 
-            if question_type == "Multiple Choice":
+            if type == "Multiple Choice":
                 options = question.get("options", [])
                 pdf_canvas.drawString(x_position, y_position, f"{index}. {question_text}")
 
@@ -54,14 +52,13 @@ class Converter:
                     wrapped_option_lines = Converter.wrap_text(f"{chr(96 + option_index)}. {option}", max_line_length)
                     for i, wrapped_option_line in enumerate(wrapped_option_lines):
                         if i == 0:
-                            pdf_canvas.drawString(x_position + 20, y_position, wrapped_option_line)
+                            y_position -= line_height
+                            pdf_canvas.drawString(x_position + 15, y_position, wrapped_option_line)
                         else:
-                            pdf_canvas.drawString(x_position + 35, y_position, wrapped_option_line)
+                            pdf_canvas.drawString(x_position + 28, y_position - 2, wrapped_option_line)
                         y_position -= line_height
 
-                y_position -= line_height  # Adjust the vertical position for the next question
-
-            elif question_type == "Identification":
+            elif type == "Identification":
                 wrapped_text_lines = Converter.wrap_text(f"{index}. {question_text}", max_line_length)
                 for i, wrapped_text_line in enumerate(wrapped_text_lines):
                     if i == 0:
@@ -70,7 +67,7 @@ class Converter:
                         pdf_canvas.drawString(x_position + 15, y_position, wrapped_text_line)
                     y_position -= line_height
 
-            elif question_type == "True or False":
+            elif type == "True or False":
                 wrapped_text_lines = Converter.wrap_text(f"{index}. {question_text}", max_line_length)
                 for i, wrapped_text_line in enumerate(wrapped_text_lines):
                     if i == 0:
@@ -79,13 +76,22 @@ class Converter:
                         pdf_canvas.drawString(x_position + 15, y_position, wrapped_text_line)
                     y_position -= line_height
 
-            elif question_type == "Fill in the Blanks":
+            elif type == "Fill in the Blanks":
                 lines = Converter.wrap_text(f"{index}. {question_text}", max_line_length)
                 for i, line in enumerate(lines):
                     if i == 0:
                         pdf_canvas.drawString(x_position, y_position, line)
                     else:
-                        pdf_canvas.drawString(x_position + 15, y_position, line)
+                        pdf_canvas.drawString(x_position + 15, y_position-5, line)
+                    y_position -= line_height
+
+            elif type == "Essay":
+                lines = Converter.wrap_text(f"{index}. {question_text}", max_line_length)
+                for i, line in enumerate(lines):
+                    if i == 0:
+                        pdf_canvas.drawString(x_position, y_position, line)
+                    else:
+                        pdf_canvas.drawString(x_position + 15, y_position-5, line)
                     y_position -= line_height
 
             y_position -= line_height  # Adjust the vertical position for the next question
@@ -94,60 +100,156 @@ class Converter:
         pdf_canvas.save()
 
     @staticmethod
-    def json_to_pdf2(assessment):
-        # Create a PDF document
-        pdf_canvas = canvas.Canvas(r"Project Files\assessment.pdf", pagesize=letter)
+    def generate_answer_key(assessment, type):
 
-        # Extract information from the JSON
+        # Get the questions from the assessment
         questions = assessment.get("questions", [])
-        Converter.generate_answer_key(questions)
 
-        # Add content to the PDF
-        pdf_canvas.setFont("Helvetica", 12)
-
-        y_position = 780
-        for index, question in enumerate(questions, start=1):
-            y_position -= 20  # Adjust the vertical position for each question
-
-            question_text = question.get("question", "")
-            options = question.get("options", [])
-            answer_index = question.get("answer", 0)
-
-            # Add question to the PDF
-            pdf_canvas.drawString(100, y_position, f"{index}. {question_text}")
-
-            # Add options to the PDF
-            for option_index, option in enumerate(options, start=1):
-                y_position -= 15  # Adjust the vertical position for each option
-                pdf_canvas.drawString(120, y_position, f"{chr(96 + option_index)}. {option}")
-
-            y_position -= 20  # Adjust the vertical position for the next question
-
-        # Save the PDF
-        pdf_canvas.save()
-    
-    @staticmethod
-    def generate_answer_key(questions):
         # Create a PDF document for the answer key
-        pdf_canvas = canvas.Canvas(r"Project Files\answer_key.pdf", pagesize=letter)
-
-        questions 
+        pdf_canvas = canvas.Canvas(fr"Project Files\answer_key_{type}.pdf", pagesize=letter)
 
         # Add content to the PDF
         pdf_canvas.setFont("Helvetica", 12)
 
+        
+
         y_position = 780
         for index, question in enumerate(questions, start=1):
-            y_position -= 20  # Adjust the vertical position for each question
+            y_position -= 15  # Adjust the vertical position for each question
 
-            correct_answer = f"Question {index}: {question['answer']}"
-            
+            if type == "Multiple Choice":
+                correct_answer = f"Question {index}: {chr(97 + question['answer'])}"
+            elif type == "Identification":
+                correct_answer = f"Question {index}: {question['answer']}"
+            elif type == "True or False":
+                correct_answer = f"Question {index}: {'True' if question['answer'] else 'False'}"
+            elif type == "Fill in the Blanks":
+                correct_answer = f"Question {index}: {question['answer']}"
+
             pdf_canvas.drawString(120, y_position, correct_answer)
 
-            y_position -= 30  # Adjust the vertical position for the next question
+            y_position -= 25  # Adjust the vertical position for the next question
 
         # Save the PDF
         pdf_canvas.save()
+
+    @staticmethod
+    def json_to_exam_pdf(exam, y_limit=100):
+        # Create a PDF document
+        pdf_canvas = canvas.Canvas(r"Project Files\exam.pdf", pagesize=letter)
+
+        # Add a header to the PDF
+        pdf_canvas.setFont("Helvetica-Bold", 14)
+        pdf_canvas.drawString(50, 770, "Exam")
+        pdf_canvas.setFont("Helvetica", 12)
+
+        y_position = 750  # Adjusted starting position
+        x_position = 50  # Adjusted starting position on the x-axis
+        line_height = 15  # Adjusted line height
+        max_line_length = 80  # Adjusted maximum line length
+
+        for section in exam["sections"]:
+            # Add section name to the PDF
+            pdf_canvas.setFont("Helvetica-Bold", 12)
+            pdf_canvas.drawString(x_position, y_position, section["section_type"])
+            pdf_canvas.setFont("Helvetica", 12)
+            y_position -= 2 * line_height  # Adjust the vertical position for the section name
+
+            questions = section["questions"]["questions"]
+            for index, question in enumerate(questions, start=1):
+                y_position -= 2 * line_height  # Adjust the vertical position for each question
+
+                question_text = question.get("question", "")
+                wrapped_question_lines = Converter.wrap_text(f"{index}. {question_text}", max_line_length)
+                for i, wrapped_question_line in enumerate(wrapped_question_lines):
+                    if i == 0:
+                        y_position -= line_height
+                        pdf_canvas.drawString(x_position, y_position, wrapped_question_line)
+                    else:
+                        y_position -= 5
+                        pdf_canvas.drawString(x_position + 15, y_position, wrapped_question_line)
+                    y_position -= line_height
+
+                # Add options to the PDF if it's a Multiple Choice section
+                if section["section_type"] == "Multiple Choice":
+                    options = question.get("options", [])
+                    for option_index, option in enumerate(options, start=1):
+                        y_position -= line_height  # Adjust the vertical position for each option
+                        wrapped_option_lines = Converter.wrap_text(f"{chr(96 + option_index)}. {option}", max_line_length)
+                        for i, wrapped_option_line in enumerate(wrapped_option_lines):
+                            if i == 0:
+                                y_position -= line_height
+                            pdf_canvas.drawString(x_position + 15, y_position, wrapped_option_line)
+                            y_position -= line_height
+
+                y_position -= line_height  # Adjust the vertical position for the next question
+
+                # Check if y_position exceeds the y_limit, add a new page if needed
+                if y_position < y_limit:
+                    pdf_canvas.showPage()
+                    y_position = 750  # Reset y_position for the new page
+
+            y_position -= line_height * 2 # Adjust the vertical position for the next section
+
+        # Save the PDF
+        pdf_canvas.save()
+
+    @staticmethod
+    def generate_exam_answer_key(exam):
+        # Create a PDF document for the answer key
+        pdf_canvas = canvas.Canvas(r"Project Files\exam_answer_key.pdf", pagesize=letter)
+
+        # Add content to the PDF
+        pdf_canvas.setFont("Helvetica", 12)
+
+        y_position = 780
+        for section in exam["sections"]:
+            # Add section name to the PDF
+            pdf_canvas.setFont("Helvetica-Bold", 14)
+            pdf_canvas.drawString(50, y_position, section["section_name"])
+            pdf_canvas.setFont("Helvetica", 12)
+            y_position -= 30  # Adjust the vertical position for the section name
+
+            questions = section["questions"]
+            for index, question in enumerate(questions, start=1):
+                y_position -= 20  # Adjust the vertical position for each question
+
+                if section["section_type"] == "Multiple Choice":
+                    correct_answer = f"Question {index}: Option {question['answer']}"
+                elif section["section_type"] == "Identification":
+                    correct_answer = f"Question {index}: {question['answer']}"
+                elif section["section_type"] == "True or False":
+                    correct_answer = f"Question {index}: {'True' if question['answer'] else 'False'}"
+                elif section["section_type"] == "Fill in the Blanks":
+                    correct_answer = f"Question {index}: {question['answer']}"
+                elif section["section_type"] == "Essay":
+                    correct_answer = f"Question {index}: No specific answer"  # Or however you want to handle this case
+
+                pdf_canvas.drawString(120, y_position, correct_answer)
+
+                y_position -= 30  # Adjust the vertical position for the next question
+
+        # Save the PDF
+        pdf_canvas.save()
+
+    @staticmethod
+    def wrap_text(text, max_length):
+        """Wrap text to limit the line length and return a list of strings."""
+        words = text.split()
+        lines = []
+        current_line = ""
+
+        for word in words:
+            if len(current_line) + len(word) + 1 <= max_length:
+                current_line += word + " "
+            else:
+                lines.append(current_line.strip())
+                current_line = word + " "
+
+        if current_line:
+            lines.append(current_line.strip())
+
+        return lines
 
     @staticmethod
     def json_to_gift(assessment):
@@ -179,22 +281,3 @@ class Converter:
             
             with open(r"Project Files\assessment_gift.txt", "w") as file:
                 file.write(gift_output)
-
-    @staticmethod
-    def wrap_text(text, max_length):
-        """Wrap text to limit the line length and return a list of strings."""
-        words = text.split()
-        lines = []
-        current_line = ""
-
-        for word in words:
-            if len(current_line) + len(word) + 1 <= max_length:
-                current_line += word + " "
-            else:
-                lines.append(current_line.strip())
-                current_line = word + " "
-
-        if current_line:
-            lines.append(current_line.strip())
-
-        return lines

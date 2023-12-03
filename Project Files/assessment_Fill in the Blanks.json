@@ -1,1 +1,13 @@
-{"type": "Fill in the Blanks", "questions": [{"question": "The Prototype Pattern is a __________ design pattern that allows us to make new objects by copying existing objects.", "answer": "creational"}, {"question": "The Prototype pattern allows for creating new objects by _________ existing ones.", "answer": "copying"}]}
+{
+    "type": "Fill in the Blanks",
+    "questions": [
+        {
+            "question": "The Prototype Pattern is a __________ design pattern that allows us to make new objects by copying existing objects.",
+            "answer": "creational"
+        },
+        {
+            "question": "The Prototype pattern allows for creating new objects by _________ existing ones.",
+            "answer": "copying"
+        }
+    ]
+}

@@ -38,18 +38,20 @@ print("Assessment Generator CLI")
 # with open(r"Project Files\output.txt", 'r') as f:
 #     lesson_in_text = f.read()
 
-
+# learning_outcomes = "Understand the Prototype Design Pattern"
 
 # ai = AI()
 
-# assessment_json = ai.get_assessment_quiz(lesson_in_text, "Fill in the Blanks", 2, learning_outcomes) 
+# assessment_json = ai.get_assessment_quiz(lesson_in_text, "Identification", 5, learning_outcomes) 
 
-# print(f"{assessment_json}")
+# # print(f"{assessment_json}")
 
 # For testing purposes, we will use the sample assessment
-with open(f'Project Files/assessment_Multiple Choice.json', 'r') as f:
+type = "exam"
+
+with open(f'Project Files/assessment_{type}.json', 'r') as f:
     # Load the JSON data
-    assessment_json = json.load(f)
+    exam = json.load(f)
 
 # Save the Lesson to a PDF file
-Converter.json_to_pdf(assessment_json)
+Converter.json_to_exam_pdf(exam)

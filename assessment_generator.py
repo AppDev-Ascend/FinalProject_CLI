@@ -15,7 +15,7 @@ class AI:
     def get_assessment_quiz(self, lesson, assessment_type, number_of_questions, learning_outcomes) -> dict:
         print(f"\n\nGenerating {number_of_questions} {assessment_type} Quiz...\n\n")
         assessment = ""
-        
+
         match(assessment_type):
             case "Multiple Choice":
                 json_data = {
@@ -73,6 +73,8 @@ class AI:
 
         json_string = json.dumps(json_data)
 
+        question = "a flashcard question where the term is an answer" if assessment_type == "identification" else assessment_type
+
         is_valid = False
         while not is_valid:
             # API Call to Generate Assessment
@@ -88,7 +90,7 @@ class AI:
                         {
                             "role": "user",
                             "content": f"Compose an quiz for this lesson {lesson}. \n \
-                                        The quiz contains {number_of_questions} number of {assessment_type} question/s \n \
+                                        The quiz contains {number_of_questions} questions that is {question} \n \
                                         Lastly, the output must be a JSON in this format: {json_string}"
                         }
                     ]
@@ -176,7 +178,6 @@ class AI:
                 "section_type": assessment_type,
                 "questions": questions
             })
-
 
             # for testing purposes, since OpenAI has a limit of 3 requests per minute on a free account
             time.sleep(60)

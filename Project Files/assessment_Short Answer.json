@@ -1,0 +1,9 @@
+{
+    "type": "Short Answer",
+    "questions": [
+        {
+            "question": "What problem does the Prototype design pattern solve?",
+            "answer": "The Prototype design pattern solves the problem of resource-intensive or complex object creation by allowing new objects to be created by cloning existing objects."
+        }
+    ]
+}
