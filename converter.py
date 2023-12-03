@@ -201,21 +201,31 @@ class Converter:
 
         # Add content to the PDF
         pdf_canvas.setFont("Helvetica", 12)
-
+        max_line_length = 80  # Adjusted maximum line length
         y_position = 780
+        y_limit = 100  # Set the y_limit
+        line_height = 10  # Set the line height
+        x_position = 80  # Adjusted starting position on the x-axis
+
         for section in exam["sections"]:
             # Add section name to the PDF
             pdf_canvas.setFont("Helvetica-Bold", 14)
-            pdf_canvas.drawString(50, y_position, section["section_name"])
+            if section["section_type"] != "Essay":
+                pdf_canvas.drawString(50, y_position, section["section_type"])
             pdf_canvas.setFont("Helvetica", 12)
-            y_position -= 30  # Adjust the vertical position for the section name
+            y_position -= line_height  # Adjust the vertical position for the section name
 
-            questions = section["questions"]
+            questions = section["questions"]["questions"]
             for index, question in enumerate(questions, start=1):
-                y_position -= 20  # Adjust the vertical position for each question
+                y_position -= 2 * line_height  # Adjust the vertical position for each question
+
+                # Check if y_position exceeds the y_limit, add a new page if needed
+                if y_position < y_limit:
+                    pdf_canvas.showPage()
+                    y_position = 780  # Reset y_position for the new page
 
                 if section["section_type"] == "Multiple Choice":
-                    correct_answer = f"Question {index}: Option {question['answer']}"
+                    correct_answer = f"Question {index}: {chr(97 + question['answer'])}"
                 elif section["section_type"] == "Identification":
                     correct_answer = f"Question {index}: {question['answer']}"
                 elif section["section_type"] == "True or False":
@@ -223,11 +233,20 @@ class Converter:
                 elif section["section_type"] == "Fill in the Blanks":
                     correct_answer = f"Question {index}: {question['answer']}"
                 elif section["section_type"] == "Essay":
-                    correct_answer = f"Question {index}: No specific answer"  # Or however you want to handle this case
+                    pass
+                
+                if(section["section_type"] != "Essay"):
+                    wrapped_correct_answer = Converter.wrap_text(correct_answer, max_line_length)
+                    for i, wrapped_question_line in enumerate(wrapped_correct_answer):
+                        if i == 0:
+                            y_position -= line_height
+                            pdf_canvas.drawString(x_position, y_position, wrapped_question_line)
+                        else:
+                            y_position -= 5
+                            pdf_canvas.drawString(x_position + 65, y_position, wrapped_question_line)
+                        y_position -= line_height
 
-                pdf_canvas.drawString(120, y_position, correct_answer)
-
-                y_position -= 30  # Adjust the vertical position for the next question
+            y_position -= 2 * line_height  # Adjust the vertical position for the next section
 
         # Save the PDF
         pdf_canvas.save()

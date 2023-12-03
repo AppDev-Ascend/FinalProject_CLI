@@ -55,3 +55,5 @@ with open(f'Project Files/assessment_{type}.json', 'r') as f:
 
 # Save the Lesson to a PDF file
 Converter.json_to_exam_pdf(exam)
+
+Converter.generate_exam_answer_key(exam)
