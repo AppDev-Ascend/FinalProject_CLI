@@ -174,7 +174,7 @@ class AI:
                     is_valid = False
 
         # Save assessment to a json file
-        with open(fr'Project Files\assessment_{assessment_type}.json', 'w') as f:
+        with open(fr'Project Files\quiz_{assessment_type}.json', 'w') as f:
             json.dump(assessment_json, f)
 
         return assessment_json
@@ -213,7 +213,7 @@ class AI:
 
             print(f"Generating Section {section_name}...\n\n")
 
-            questions = self.get_assessment_quiz(lesson, assessment_type, question_count, learning_outcomes)
+            questions = self.get_quiz(lesson, assessment_type, question_count, learning_outcomes)
             exam["sections"].append({
                 "section_name": section_name,
                 "section_type": assessment_type,
@@ -221,10 +221,10 @@ class AI:
             })
 
             # for testing purposes, since OpenAI has a limit of 3 requests per minute on a free account
-            time.sleep(60)
+            time.sleep(20)
 
         # Save exam to a json file
-        with open(fr'Project Files\assessment_exam.json', 'w') as f:
+        with open(fr'Project Files\exam.json', 'w') as f:
             json.dump(exam, f)
         
         return exam

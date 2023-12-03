@@ -40,10 +40,10 @@
    - [X] JSON to PDF for Fill in the Blanks
    - [X] JSON to PDF for Essay
    - [X] JSON to PDF for Exam
-- [ ] Update JSON to GIFT for the new JSON Format
-   - [ ] JSON to GIFT for Multiple Choice
-   - [ ] JSON to GIFT for Identification
-   - [ ] JSON to GIFT for True or False
-   - [ ] JSON to GIFT for Fill in the Blanks
-   - [ ] JSON to GIFT for Essay
-   - [ ] JSON to GIFT for eXAM
+- [X] Update JSON to GIFT for the new JSON Format
+   - [X] JSON to GIFT for Multiple Choice
+   - [X] JSON to GIFT for Identification
+   - [X] JSON to GIFT for True or False
+   - [X] JSON to GIFT for Fill in the Blanks
+   - [X] JSON to GIFT for Essay
+   - [X] JSON to GIFT for eXAM

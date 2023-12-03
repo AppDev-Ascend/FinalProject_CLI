@@ -50,7 +50,7 @@ class Converter:
         """
 
         # Create a PDF document
-        pdf_canvas = canvas.Canvas(rf"Project Files\assessment_{type}.pdf", pagesize=letter)
+        pdf_canvas = canvas.Canvas(rf"Project Files\quiz_{type}.pdf", pagesize=letter)
 
         pdf_canvas.setFont("Helvetica-Bold", 14)
         pdf_canvas.drawString(50, 770, f"{type}")
@@ -150,7 +150,7 @@ class Converter:
         questions = assessment.get("questions", [])
 
         # Create a PDF document for the answer key
-        pdf_canvas = canvas.Canvas(fr"Project Files\answer_key_{type}.pdf", pagesize=letter)
+        pdf_canvas = canvas.Canvas(fr"Project Files\quiz_answer_key_{type}.pdf", pagesize=letter)
 
         # Add content to the PDF
         pdf_canvas.setFont("Helvetica", 12)
@@ -203,7 +203,7 @@ class Converter:
 
         y_position = 750
         x_position = 50
-        line_height = 15
+        line_height = 10
         max_line_length = 80
         y_limit = 100  # Set the y_limit
 
@@ -212,11 +212,11 @@ class Converter:
             pdf_canvas.setFont("Helvetica-Bold", 12)
             pdf_canvas.drawString(x_position, y_position, section["section_type"])
             pdf_canvas.setFont("Helvetica", 12)
-            y_position -= 2 * line_height  # Adjust the vertical position for the section name
+            y_position -= line_height  # Adjust the vertical position for the section name
 
             questions = section["questions"]["questions"]
             for index, question in enumerate(questions, start=1):
-                y_position -= 2 * line_height  # Adjust the vertical position for each question
+                y_position -= line_height  # Adjust the vertical position for each question
 
                 question_text = question.get("question", "")
                 wrapped_question_lines = Converter.wrap_text(f"{index}. {question_text}", max_line_length)
@@ -248,7 +248,7 @@ class Converter:
                     pdf_canvas.showPage()
                     y_position = 750  # Reset y_position for the new page
 
-            y_position -= line_height * 2 # Adjust the vertical position for the next section
+            y_position -= line_height # Adjust the vertical position for the next section
 
         # Save the PDF
         pdf_canvas.save()
@@ -402,7 +402,7 @@ class Converter:
             file.write(gift_string)
 
     @staticmethod
-    def exam_to_gift(exam):
+    def exam_to_gift(exam, output_file):
         """
         Convert an exam assessment in JSON format to a GIFT (General Import Format Template) file.
         
@@ -458,5 +458,9 @@ class Converter:
 
                 elif section_type == "Essay":
                     gift_string += f"::Question::{question_text}?\n"
+
+        # Save the GIFT content to the specified output file
+        with open(output_file, "w") as file:
+            file.write(gift_string)
 
         return gift_string
