@@ -1,9 +1,1 @@
-{
-    "type": "Identification",
-    "questions": [
-        {
-            "question": "What is the Prototype Design Pattern?",
-            "answer": "The Prototype Pattern is a creational design pattern that allows us to make new objects by copying existing objects, known as prototype. Instead of creating new objects, this pattern can clone existing instance to generate new instances with the same properties and behaviors. This can be particularly useful in situations where object creation is resource-intensive or complex, as it reduces the overhead of creating objects from scratch. By using Prototype Pattern, you can improve performance and reduce the usage of resource by reusing objects for creating new ones."
-        }
-    ]
-}
+{"type": "Identification", "questions": [{"question": "What is the Prototype Pattern?", "answer": "A creational design pattern that allows the creation of new objects by copying existing objects."}]}

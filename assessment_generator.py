@@ -87,7 +87,7 @@ class AI:
                         },
                         {
                             "role": "user",
-                            "content": f"Compose an quuiz for this lesson {lesson}. \n \
+                            "content": f"Compose an quiz for this lesson {lesson}. \n \
                                         The quiz contains {number_of_questions} number of {assessment_type} question/s \n \
                                         Lastly, the output must be a JSON in this format: {json_string}"
                         }
@@ -182,7 +182,7 @@ class AI:
             time.sleep(60)
 
         # Save exam to a json file
-        with open(f'assessment_exam.json', 'w') as f:
+        with open(fr'Project Files\assessment_exam.json', 'w') as f:
             json.dump(exam, f)
         
         return exam

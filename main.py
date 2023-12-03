@@ -31,42 +31,25 @@ print("Assessment Generator CLI")
 #     outcome = input(f"Enter Learning Outcome #{i+1}: ")
 #     learning_outcomes += f"{i+1}. {outcome}\n"
 
-print("Converting Lesson to Text... \n\n")
+# print("Converting Lesson to Text... \n\n")
 
-# lesson_in_text = Converter.pdf_to_text(r"Project Files\Prototype Pattern Document.pdf")
+# # lesson_in_text = Converter.pdf_to_text(r"Project Files\Prototype Pattern Document.pdf")
 
-with open(r"Project Files\output.txt", 'r') as f:
-    lesson_in_text = f.read()
+# with open(r"Project Files\output.txt", 'r') as f:
+#     lesson_in_text = f.read()
 
-exam_format = [
-    ("Section 1", "Multiple Choice", 1),
-    ("Section 2", "Identification", 5),
-    ("Section 3", "True or False", 5),
-    ("Section 4", "Fill in the Blanks", 5),
-    ("Section 5", "Essay", 2)
-]
 
-learning_outcomes = [
-    "1. Identify the components of the Prototype Design Pattern.",
-    "2. Identify the pros and cons of the Prototype Design Pattern.",
-]
 
-ai = AI()
+# ai = AI()
 
-# # Generate the Lesson
-# assessment_json = ai.get_assessment(lesson_in_text, assessment_type, question_number, learning_outcomes)
+# assessment_json = ai.get_assessment_quiz(lesson_in_text, "Fill in the Blanks", 2, learning_outcomes) 
 
-assessment_json = ai.get_assessment_quiz(lesson_in_text, "Fill in the Blanks", 2, learning_outcomes) 
+# print(f"{assessment_json}")
 
-print(f"{assessment_json}")
+# For testing purposes, we will use the sample assessment
+with open(f'Project Files/assessment_Multiple Choice.json', 'r') as f:
+    # Load the JSON data
+    assessment_json = json.load(f)
 
-# # For testing purposes, we will use the sample assessment
-# with open('assessment.json', 'r') as f:
-#     # Load the JSON data
-#     assessment_json = json.load(f)
-
-# # Save the Lesson to a PDF file
-# Converter.json_to_pdf(assessment_json)
-
-# # Save the Lesson to a GIFT file
-# Converter.json_to_gift(assessment_json)
+# Save the Lesson to a PDF file
+Converter.json_to_pdf(assessment_json)

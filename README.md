@@ -30,8 +30,20 @@
 - [X] Add Saving Assessments to different File Types Class
 - [X] Convert Assessment (JSON) to PDF
 - [X] Convert Assessment (JSON) to GIFT
-- [ ] Update JSON File
-   - [ ] Check Format of New Assessment File Type
-   - [ ] Update JSON to PDF for the new JSON Format
-   - [ ] Update JSON to GIFT for the new JSON Format
-- [ ] Update Query to Check if there are Learning Outcomes
+- [X] Update JSON Format
+- [x] Check Format of New Assessment File Type
+- [x] Check the Exam Generation
+- [ ] Update JSON to PDF
+   - [ ] JSON to PDF for Multiple Choice
+   - [ ] JSON to PDF for Identification
+   - [ ] JSON to PDF for True or False
+   - [ ] JSON to PDF for Fill in the Blanks
+   - [ ] JSON to PDF for Essay
+   - [ ] JSON to PDF for Exam
+- [ ] Update JSON to GIFT for the new JSON Format
+   - [ ] JSON to GIFT for Multiple Choice
+   - [ ] JSON to GIFT for Identification
+   - [ ] JSON to GIFT for True or False
+   - [ ] JSON to GIFT for Fill in the Blanks
+   - [ ] JSON to GIFT for Essay
+   - [ ] JSON to GIFT for eXAM

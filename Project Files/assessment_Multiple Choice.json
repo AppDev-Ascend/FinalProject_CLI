@@ -1,15 +1,1 @@
-{
-    "type": "Multiple Choice",
-    "questions": [
-        {
-            "question": "What is the Prototype Design Pattern used for?",
-            "options": [
-                "Efficient Object Creation",
-                "Reducing Subclassing",
-                "Configuring Objects",
-                "All of the above"
-            ],
-            "answer": 4
-        }
-    ]
-}
+{"type": "Multiple Choice", "questions": [{"question": "What is the Prototype Design Pattern?", "options": ["A pattern that allows us to make new objects by copying existing objects.", "A pattern that allows us to create objects from scratch.", "A pattern that allows us to modify existing objects.", "A pattern that allows us to delete existing objects."], "answer": 0}, {"question": "What is an advantage of using the Prototype Design Pattern?", "options": ["Reduced complexity of object construction.", "Efficient object creation.", "Maintaining object relationships.", "All of the above."], "answer": 3}]}
