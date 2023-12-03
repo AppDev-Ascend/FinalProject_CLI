@@ -1,0 +1,13 @@
+{
+    "type": "Fill in the Blanks",
+    "questions": [
+        {
+            "question": "The Prototype Pattern is a ____________ design pattern that allows us to make new objects by copying existing objects.",
+            "answer": "creational"
+        },
+        {
+            "question": "The Prototype Registry is a central repository or store that holds a collection of _________ prototype objects.",
+            "answer": "pre-defined"
+        }
+    ]
+}

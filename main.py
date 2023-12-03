@@ -33,17 +33,17 @@ print("Assessment Generator CLI")
 
 print("Converting Lesson to Text... \n\n")
 
-lesson_in_text = Converter.pdf_to_text(r"Project Files\Prototype Pattern Document.pdf")
+# lesson_in_text = Converter.pdf_to_text(r"Project Files\Prototype Pattern Document.pdf")
 
-# with open(r"Project Files\output.txt", 'r') as f:
-#     lesson_in_text = f.read()
+with open(r"Project Files\output.txt", 'r') as f:
+    lesson_in_text = f.read()
 
 exam_format = [
-            ("Section 1", "Multiple Choice", 5),
-            ("Section 2", "Identification", 5),
-            ("Section 3", "True or False", 5),
-            ("Section 4", "Fill in the Blanks", 5),
-            ("Section 5", "Essay", 2)
+    ("Section 1", "Multiple Choice", 1),
+    ("Section 2", "Identification", 5),
+    ("Section 3", "True or False", 5),
+    ("Section 4", "Fill in the Blanks", 5),
+    ("Section 5", "Essay", 2)
 ]
 
 learning_outcomes = [
@@ -56,7 +56,7 @@ ai = AI()
 # # Generate the Lesson
 # assessment_json = ai.get_assessment(lesson_in_text, assessment_type, question_number, learning_outcomes)
 
-assessment_json = ai.get_assessment_quiz(lesson_in_text, exam_format[0][1], exam_format[0][2], learning_outcomes) 
+assessment_json = ai.get_assessment_quiz(lesson_in_text, "Fill in the Blanks", 2, learning_outcomes) 
 
 print(f"{assessment_json}")
 

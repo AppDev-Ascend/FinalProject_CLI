@@ -1,0 +1,15 @@
+{
+    "type": "Multiple Choice",
+    "questions": [
+        {
+            "question": "What is the Prototype Design Pattern used for?",
+            "options": [
+                "Efficient Object Creation",
+                "Reducing Subclassing",
+                "Configuring Objects",
+                "All of the above"
+            ],
+            "answer": 4
+        }
+    ]
+}

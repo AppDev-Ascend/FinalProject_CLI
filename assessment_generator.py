@@ -13,7 +13,7 @@ class AI:
         self.client = OpenAI(api_key=OPENAI_API_KEY)
 
     def get_assessment_quiz(self, lesson, assessment_type, number_of_questions, learning_outcomes) -> dict:
-        print(f"\n\nGenerating a {assessment_type} Quiz...\n\n")
+        print(f"\n\nGenerating {number_of_questions} {assessment_type} Quiz...\n\n")
         assessment = ""
         
         match(assessment_type):
@@ -87,27 +87,58 @@ class AI:
                         },
                         {
                             "role": "user",
-                            "content": f"Compose an assessment for this lesson {lesson}. \n \
-                                        The assessment should consist of {number_of_questions} {assessment_type} questions \n \
+                            "content": f"Compose an quuiz for this lesson {lesson}. \n \
+                                        The quiz contains {number_of_questions} number of {assessment_type} question/s \n \
                                         Lastly, the output must be a JSON in this format: {json_string}"
                         }
                     ]
                 )
 
                 assessment = completion.choices[0].message.content
-                print(f"Assessment: {assessment}")
 
                 # Test the Assessment Format
                 try:
                     assessment_json = json.loads(assessment)
-                    print(f"Assessment Json: {assessment_json}")
 
-                    if "questions" in assessment_json and isinstance(assessment_json["questions"], list):
+                    if "type" in assessment_json and "questions" in assessment_json and isinstance(assessment_json["questions"], list):
                         for question in assessment_json["questions"]:
-                            if "type" in question and "question" in question:
-                                is_valid = True
+                            if assessment_json["type"] == "Multiple Choice":
+                                if "question" in question and "options" in question and "answer" in question:
+                                    is_valid = True
+                                else:
+                                    print("Error: Question in the Multiple Choice assessment does not match expected format.")
+                                    is_valid = False
+                                    break
+                            elif assessment_json["type"] == "Identification":
+                                if "question" in question and "answer" in question:
+                                    is_valid = True
+                                else:
+                                    print("Error: Question in the Identification assessment does not match expected format.")
+                                    is_valid = False
+                                    break
+                            elif assessment_json["type"] == "True or False":
+                                if "question" in question and "answer" in question:
+                                    is_valid = True
+                                else:
+                                    print("Error: Question in the True or False assessment does not match expected format.")
+                                    is_valid = False
+                                    break
+                            elif assessment_json["type"] == "Fill in the Blanks":
+                                if "question" in question and "answer" in question:
+                                    is_valid = True
+                                else:
+                                    print("Error: Question in the Fill in the Blanks assessment does not match expected format.")
+                                    is_valid = False
+                                    break
+                            elif assessment_json["type"] == "Essay":
+                                if "question" in question:
+                                    is_valid = True
+                                else:
+                                    print("Error: Question in the Essay assessment does not match expected format.")
+                                    is_valid = False
+                                    break
                             else:
-                                print("Error: Question in the assessment does not match expected format.")
+                                print("Error: Invalid Assessment Type")
                                 is_valid = False
                                 break
                     else:
@@ -115,13 +146,12 @@ class AI:
                         is_valid = False
 
                 except json.JSONDecodeError:
-                    print(assessment_json)
+                    print(assessment)
                     print("Error: Assessment is not in valid JSON format")
                     is_valid = False
 
-                is_valid = True
         # Save assessment to a json file
-        with open('assessment.json', 'w') as f:
+        with open(fr'Project Files\assessment_{assessment_type}.json', 'w') as f:
             json.dump(assessment_json, f)
 
         return assessment_json

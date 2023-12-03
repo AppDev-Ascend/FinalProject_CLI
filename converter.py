@@ -16,7 +16,7 @@ class Converter:
             text += f'\nPage {i + 1}:\n\n'
             text += pytesseract.image_to_string(img, lang='eng')
 
-        with open(r'\Project Files\output.txt', 'w') as f:
+        with open(r'Project Files\output.txt', 'w') as f:
                 f.write(text)
         return text
 
