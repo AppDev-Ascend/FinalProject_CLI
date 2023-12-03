@@ -12,7 +12,28 @@ class AI:
         OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
         self.client = OpenAI(api_key=OPENAI_API_KEY)
 
-    def get_assessment_quiz(self, lesson, assessment_type, number_of_questions, learning_outcomes) -> dict:
+    def get_quiz(self, lesson, assessment_type, number_of_questions, learning_outcomes) -> dict:
+
+        """
+        Generate a quiz based on the specified assessment type and learning outcomes.
+
+        Parameters:
+        - lesson (str): The lesson for which the quiz is generated.
+        - assessment_type (str): The type of assessment (e.g., "Multiple Choice", "Identification").
+        - number_of_questions (int): The number of questions to generate for the quiz.
+        - learning_outcomes (list): A list of learning outcomes to guide question generation.
+
+        Returns:
+        dict: The generated quiz in dictionary format.
+
+        Note:
+        - The function uses GPT-3.5-turbo from OpenAI to generate quiz questions based on the provided information.
+        - The generated quiz is validated against the expected JSON structure for each assessment type.
+        - If the assessment generated does not match the expected format, the function prints an error message and exits.
+        - The generated quiz is saved to a JSON file named 'assessment_{assessment_type}.json'.
+        - The function returns the generated quiz in dictionary format.
+        """
+
         print(f"\n\nGenerating {number_of_questions} {assessment_type} Quiz...\n\n")
         assessment = ""
 
@@ -158,8 +179,28 @@ class AI:
 
         return assessment_json
 
-    def get_assessment_exam(self, lesson, exam_format, learning_outcomes) -> dict:
+    def get_exam(self, lesson, exam_format, learning_outcomes) -> dict:
+        """
+        Generate an exam based on the specified format and learning outcomes.
 
+        Parameters:
+        - lesson (str): The lesson for which the exam is generated.
+        - exam_format (list): A list of tuples specifying the sections of the exam.
+          Each tuple contains:
+            - section_name (str): The name of the exam section.
+            - assessment_type (str): The type of assessment for the section (e.g., "Multiple Choice").
+            - question_count (int): The number of questions to generate for the section.
+        - learning_outcomes (list): A list of learning outcomes to guide question generation.
+
+        Returns:
+        dict: The generated exam in dictionary format.
+
+        Note:
+        - For testing purposes, there is a sleep of 60 seconds between generating sections
+          to comply with OpenAI API usage limits (3 requests per minute on a free account).
+        - The generated exam is also saved to a JSON file named 'assessment_exam.json'.
+        """
+         
         print("Generating an exam...\n\n")
 
         exam = {

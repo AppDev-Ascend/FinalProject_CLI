@@ -8,6 +8,21 @@ class Converter:
 
     @staticmethod
     def pdf_to_text(pdf_path):
+        """
+        Extract text content from a PDF file.
+
+        Parameters:
+        - pdf_path (str): The path to the PDF file.
+
+        Returns:
+        str: The extracted text content from the PDF.
+
+        Note:
+        - This method uses Poppler for PDF rendering and Tesseract OCR for text extraction.
+        - Ensure that the 'poppler_path' and 'tesseract_cmd' paths are correctly set for your environment.
+        - The method returns the extracted text content from the PDF.
+        """
+
         poppler_path = r'poppler-23.11.0\Library\bin'
         pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
         images = convert_from_path(pdf_path, poppler_path=poppler_path)
@@ -16,8 +31,24 @@ class Converter:
             text += f'\nPage {i + 1}:\n\n'
             text += pytesseract.image_to_string(img, lang='eng')
 
+        return text
+
     @staticmethod
-    def json_to_pdf(assessment, type):
+    def quiz_to_pdf(assessment, type):
+        """
+        Convert a quiz assessment in JSON format to a PDF document.
+
+        Parameters:
+        - assessment (dict): The quiz assessment in dictionary format.
+        - type (str): The type of assessment ("Multiple Choice", "Identification", "True or False", "Fill in the Blanks", "Essay").
+
+        Note:
+        - This method creates a PDF document with formatted content based on the quiz assessment.
+        - The PDF is saved to the 'Project Files' directory with the naming convention 'assessment_{type}.pdf'.
+        - The method supports different types of assessments, each with specific formatting.
+        - The assessment dictionary should have the structure consistent with the expected format for the given type.
+        """
+
         # Create a PDF document
         pdf_canvas = canvas.Canvas(rf"Project Files\assessment_{type}.pdf", pagesize=letter)
 
@@ -100,7 +131,20 @@ class Converter:
         pdf_canvas.save()
 
     @staticmethod
-    def generate_answer_key(assessment, type):
+    def quiz_answer_key(assessment, type):
+        """
+        Generate an answer key PDF for a quiz assessment.
+
+        Parameters:
+        - assessment (dict): The quiz assessment in dictionary format.
+        - type (str): The type of assessment ("Multiple Choice", "Identification", "True or False", "Fill in the Blanks", "Essay").
+
+        Note:
+        - This method creates an answer key PDF document with correct answers for the quiz assessment.
+        - The PDF is saved to the 'Project Files' directory with the naming convention 'answer_key_{type}.pdf'.
+        - The method supports different types of assessments, each with specific formatting for correct answers.
+        - The assessment dictionary should have the structure consistent with the expected format for the given type.
+        """
 
         # Get the questions from the assessment
         questions = assessment.get("questions", [])
@@ -134,7 +178,21 @@ class Converter:
         pdf_canvas.save()
 
     @staticmethod
-    def json_to_exam_pdf(exam, y_limit=100):
+    def exam_to_pdf(exam):
+        """
+        Convert an exam assessment in JSON format to a PDF document.
+
+        Parameters:
+        - exam (dict): The exam assessment in dictionary format.
+
+        Note:
+        - This method creates a PDF document with formatted content based on the exam assessment.
+        - The PDF is saved to the 'Project Files' directory with the naming convention 'exam.pdf'.
+        - The method supports different types of exam sections, each with specific formatting for questions.
+        - The exam dictionary should have the structure consistent with the expected format.
+        - If the vertical position (y_position) exceeds the y_limit, a new page is added.
+        """
+
         # Create a PDF document
         pdf_canvas = canvas.Canvas(r"Project Files\exam.pdf", pagesize=letter)
 
@@ -143,10 +201,11 @@ class Converter:
         pdf_canvas.drawString(50, 770, "Exam")
         pdf_canvas.setFont("Helvetica", 12)
 
-        y_position = 750  # Adjusted starting position
-        x_position = 50  # Adjusted starting position on the x-axis
-        line_height = 15  # Adjusted line height
-        max_line_length = 80  # Adjusted maximum line length
+        y_position = 750
+        x_position = 50
+        line_height = 15
+        max_line_length = 80
+        y_limit = 100  # Set the y_limit
 
         for section in exam["sections"]:
             # Add section name to the PDF
@@ -195,7 +254,22 @@ class Converter:
         pdf_canvas.save()
 
     @staticmethod
-    def generate_exam_answer_key(exam):
+    def exam_answer_key(exam):
+
+        """
+        Generate an answer key PDF for an exam assessment.
+
+        Parameters:
+        - exam (dict): The exam assessment in dictionary format.
+
+        Note:
+        - This method creates an answer key PDF document with correct answers for the exam assessment.
+        - The PDF is saved to the 'Project Files' directory with the naming convention 'exam_answer_key.pdf'.
+        - The method supports different types of exam sections, each with specific formatting for correct answers.
+        - The exam dictionary should have the structure consistent with the expected format.
+        - If the vertical position (y_position) exceeds the y_limit, a new page is added.
+        """
+
         # Create a PDF document for the answer key
         pdf_canvas = canvas.Canvas(r"Project Files\exam_answer_key.pdf", pagesize=letter)
 
@@ -271,7 +345,19 @@ class Converter:
         return lines
 
     @staticmethod
-    def json_to_gift(json_data, output_file):
+    def quiz_to_gift(json_data, output_file):
+        """
+        Convert a quiz assessment in JSON format to a GIFT (General Import Format Template) file.
+
+        Parameters:
+        - json_data (dict): The quiz assessment in dictionary format.
+        - output_file (str): The path to the output GIFT file.
+
+        Note:
+        - This method supports various types of quiz questions (Multiple Choice, Identification, True or False, Fill in the Blanks, Essay).
+        - The GIFT file is created based on the input JSON data and saved to the specified output file.
+        """
+
         gift_string = ""
 
         for question_data in json_data["questions"]:
@@ -314,3 +400,63 @@ class Converter:
         # Save the GIFT content to the specified output file
         with open(output_file, "w") as file:
             file.write(gift_string)
+
+    @staticmethod
+    def exam_to_gift(exam):
+        """
+        Convert an exam assessment in JSON format to a GIFT (General Import Format Template) file.
+        
+        Parameters:
+        - exam (dict): The exam assessment in dictionary format.
+
+        Note:
+        - This method supports various types of exam sections (Multiple Choice, Identification, True or False, Fill in the Blanks, Essay).  
+        - The GIFT file is created based on the input JSON data and saved to the specified output file.
+        """
+        
+        gift_string = ""
+
+        for section in exam["sections"]:
+            section_name = section["section_name"]
+            section_type = section["section_type"]
+            questions = section["questions"]
+
+            gift_string += f"::Section::{section_name}::{section_type}::\n"
+
+            for question_data in questions:
+                question_text = question_data["question"]
+
+                if section_type == "Multiple Choice":
+                    options = question_data.get("options", [])
+                    correct_answer_index = question_data.get("answer", 0)
+
+                    gift_string += f"::Question::{question_text}?\n"
+                    for i, option in enumerate(options):
+                        if i == correct_answer_index:
+                            gift_string += f"= {option}\n"
+                        else:
+                            gift_string += f"~ {option}\n"
+
+                elif section_type == "Identification":
+                    correct_answer = question_data.get("answer", "")
+
+                    gift_string += f"::Question::{question_text}?\n= {correct_answer}\n"
+
+                elif section_type == "True or False":
+                    correct_answer = question_data.get("answer", False)
+
+                    gift_string += f"::Question::{question_text}?\n"
+                    if correct_answer:
+                        gift_string += "= True\n~ False\n"
+                    else:
+                        gift_string += "= False\n~ True\n"
+
+                elif section_type == "Fill in the Blanks":
+                    correct_answer = question_data.get("answer", "")
+
+                    gift_string += f"::Question::{question_text} is ___?\n= {correct_answer}\n"
+
+                elif section_type == "Essay":
+                    gift_string += f"::Question::{question_text}?\n"
+
+        return gift_string
