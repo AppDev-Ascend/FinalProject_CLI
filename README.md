@@ -31,15 +31,15 @@
 - [X] Convert Assessment (JSON) to PDF
 - [X] Convert Assessment (JSON) to GIFT
 - [X] Update JSON Format
-- [x] Check Format of New Assessment File Type
-- [x] Check the Exam Generation
-- [ ] Update JSON to PDF
-   - [ ] JSON to PDF for Multiple Choice
-   - [ ] JSON to PDF for Identification
-   - [ ] JSON to PDF for True or False
-   - [ ] JSON to PDF for Fill in the Blanks
-   - [ ] JSON to PDF for Essay
-   - [ ] JSON to PDF for Exam
+- [X] Check Format of New Assessment File Type
+- [X] Check the Exam Generation
+- [X] Update JSON to PDF
+   - [X] JSON to PDF for Multiple Choice
+   - [X] JSON to PDF for Identification
+   - [X] JSON to PDF for True or False
+   - [X] JSON to PDF for Fill in the Blanks
+   - [X] JSON to PDF for Essay
+   - [X] JSON to PDF for Exam
 - [ ] Update JSON to GIFT for the new JSON Format
    - [ ] JSON to GIFT for Multiple Choice
    - [ ] JSON to GIFT for Identification

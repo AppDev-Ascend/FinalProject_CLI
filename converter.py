@@ -271,32 +271,46 @@ class Converter:
         return lines
 
     @staticmethod
-    def json_to_gift(assessment):
+    def json_to_gift(json_data, output_file):
+        gift_string = ""
 
-        gift_output = ""
+        for question_data in json_data["questions"]:
+            question_type = json_data["type"]
+            question_text = question_data["question"]
 
-        # Extract information from the JSON
-        assessment_type = assessment.get("type", "")
-        questions = assessment.get("questions", [])
+            if question_type == "Multiple Choice":
+                options = question_data.get("options", [])
+                correct_answer_index = question_data.get("answer", 0)
 
-        # Add a title for the assessment type
-        gift_output += f"::{assessment_type}::\n\n"
+                gift_string += f"::Question::{question_text}?\n"
+                for i, option in enumerate(options):
+                    if i == correct_answer_index:
+                        gift_string += f"= {option}\n"
+                    else:
+                        gift_string += f"~ {option}\n"
 
-        # Process each question
-        for index, question in enumerate(questions, start=1):
-            question_text = question.get("question", "")
-            options = question.get("options", [])
-            answer_index = question.get("answer", 0)
+            elif question_type == "Identification":
+                correct_answer = question_data.get("answer", "")
 
-            # Add question title and text
-            gift_output += f"::{index} {question_text}::\n"
+                gift_string += f"::Question::{question_text}?\n= {correct_answer}\n"
 
-            # Add options
-            for option_index, option in enumerate(options, start=1):
-                gift_output += f"{'=' if option_index == answer_index else '~'}{option} "
+            elif question_type == "True or False":
+                correct_answer = question_data.get("answer", False)
 
-            gift_output += "\n\n"
+                gift_string += f"::Question::{question_text}?\n"
+                if correct_answer:
+                    gift_string += "= True\n~ False\n"
+                else:
+                    gift_string += "= False\n~ True\n"
 
-            
-            with open(r"Project Files\assessment_gift.txt", "w") as file:
-                file.write(gift_output)
+            elif question_type == "Fill in the Blanks":
+                correct_answer = question_data.get("answer", "")
+
+                gift_string += f"::Question::{question_text} is ___?\n= {correct_answer}\n"
+
+            elif question_type == "Essay":
+                gift_string += f"::Question::{question_text}?\n"
+
+        # Save the GIFT content to the specified output file
+        with open(output_file, "w") as file:
+            file.write(gift_string)
