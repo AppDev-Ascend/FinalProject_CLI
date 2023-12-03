@@ -2,6 +2,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import json
+import time
 
 class AI:
 
@@ -11,36 +12,64 @@ class AI:
         OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
         self.client = OpenAI(api_key=OPENAI_API_KEY)
 
-    def get_assessment(self, lesson, assessment_type, number_of_questions, learning_outcomes) -> dict:
-        print("\n\nGenerating Assessment...\n\n")
+    def get_assessment_quiz(self, lesson, assessment_type, number_of_questions, learning_outcomes) -> dict:
+        print(f"\n\nGenerating a {assessment_type} Quiz...\n\n")
         assessment = ""
-
         
-        json_data = {
-            "questions": [
-            {
-                "type": "Multiple Choice",
-                "question": "Question",
-                "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
-                "answer": 1,
-            },
-            {
-                "type": "Identification",
-                "question": "Question",
-                "answer": "Answer 1"
-            },
-            {
-                "type": "True or False",
-                "question": "Question",
-                "answer": True
-            },
-            {
-                "type": "Fill in the Blanks",
-                "question": "Question is ___",
-                "answer": "Answer 1"
-            }
-            ]
-        }
+        match(assessment_type):
+            case "Multiple Choice":
+                json_data = {
+                    "type": "Multiple Choice",
+                    "questions": [
+                    {
+                        "question": "Question",
+                        "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+                        "answer": 1,
+                    }
+                    ]
+                }
+            case "Identification":
+                json_data = {
+                    "type": "Identification",
+                    "questions": [
+                    {
+                        "question": "Question",
+                        "answer": "Answer 1",
+                    }
+                    ]
+                }
+            case "True or False":
+                json_data = {
+                    "type": "True or False",
+                    "questions": [
+                    {
+                        "question": "Question",
+                        "answer": True,
+                    }
+                    ]
+                }
+            case "Fill in the Blanks":
+                json_data = {
+                    "type": "Fill in the Blanks",
+                    "questions": [
+                    {
+                        "question": "Question is ___",
+                        "answer": "Answer 1",
+                    }
+                    ]
+                }
+            case "Essay":
+                json_data = {
+                    "type": "Essay",
+                    "questions": [
+                    {
+                        "question": "Question",
+                    }
+                    ]
+                }
+            case _:
+                print("Error: Invalid Assessment Type")
+                exit()
 
         json_string = json.dumps(json_data)
 
@@ -53,7 +82,7 @@ class AI:
                     messages=[
                         {
                             "role": "system",
-                            "content": f"You are an assessment generator. You are given a lesson and you must generate an assessment for it following these learning outcomes: \n {learning_outcomes}\
+                            "content": f"You are an assessment generator who have no outside knowledge and must only generate questions based on the outputted lesson. The assessment generated should follow these learning outcomes: \n {learning_outcomes}\
                                         Lastly, You must output the assessment in JSON format."
                         },
                         {
@@ -96,3 +125,35 @@ class AI:
             json.dump(assessment_json, f)
 
         return assessment_json
+
+    def get_assessment_exam(self, lesson, exam_format, learning_outcomes) -> dict:
+
+        print("Generating an exam...\n\n")
+
+        exam = {
+            "type": "Exam",
+            "sections": []
+        }
+
+        for section in exam_format:
+            section_name, assessment_type, question_count = section
+
+            print(f"Generating Section {section_name}...\n\n")
+
+            questions = self.get_assessment_quiz(lesson, assessment_type, question_count, learning_outcomes)
+            exam["sections"].append({
+                "section_name": section_name,
+                "section_type": assessment_type,
+                "questions": questions
+            })
+
+
+            # for testing purposes, since OpenAI has a limit of 3 requests per minute on a free account
+            time.sleep(60)
+
+        # Save exam to a json file
+        with open(f'assessment_exam.json', 'w') as f:
+            json.dump(exam, f)
+        
+        return exam
+    

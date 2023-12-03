@@ -5,6 +5,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 
 class Converter:
+
     @staticmethod
     def pdf_to_text(pdf_path):
         poppler_path = r'poppler-23.11.0\Library\bin'
@@ -15,6 +16,8 @@ class Converter:
             text += f'\nPage {i + 1}:\n\n'
             text += pytesseract.image_to_string(img, lang='eng')
 
+        with open(r'\Project Files\output.txt', 'w') as f:
+                f.write(text)
         return text
 
     @staticmethod
