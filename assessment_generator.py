@@ -16,21 +16,7 @@ from llama_index.prompts.default_prompts import (
     DEFAULT_TEXT_QA_PROMPT_TMPL,
     DEFAULT_REFINE_PROMPT_TMPL,
 )
-
-class Question(BaseModel):
-    question: str = Field(...)
-    options: List[str] = Field(...)
-    answer: int = Field(...)
-
-class Response(BaseModel):
-    type: str = Field(...)
-    questions: List[Question] = Field(...)
-
-class Assessment(BaseModel):
-    type: str = Field(...)
-    questions: List[Question] = Field(...)
-
-class AI:
+class AssessmentGenerator:
 
     def __init__(self):
         # Load environment variables from .env file
