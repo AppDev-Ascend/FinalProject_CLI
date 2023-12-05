@@ -94,7 +94,7 @@ class AI:
 
         json_string = json.dumps(json_data)
 
-        question = "a flashcard question where the term is an answer" if assessment_type == "identification" else assessment_type
+        question = "short answer" if assessment_type == "identification" else assessment_type
 
         is_valid = False
         while not is_valid:
@@ -209,6 +209,7 @@ class AI:
 
             print(f"Generating Section {section_name}...\n\n")
 
+            # 
             questions = self.get_quiz(lesson, assessment_type, question_count, learning_outcomes)
             exam["sections"].append({
                 "section_name": section_name,
