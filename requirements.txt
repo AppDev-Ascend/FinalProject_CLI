@@ -20,4 +20,3 @@ tqdm==4.66.1
 typing_extensions==4.8.0
 llama-index==0.14.0
 pypdf==3.17.1
-langchain
