@@ -48,5 +48,7 @@
    - [X] JSON to GIFT for Essay
    - [X] JSON to GIFT for Exam
 - [ ] Improve AI Generation Consistency
-   - [ ] Check if the number of questions are generated always
-   - [ ] Fix Exam Format to not Generate Same Questions
+   - [ ] Use Llama Index
+   - [ ] Test Generation Consistency
+   - [ ] Fix Number of Questions Generation Error
+   - [ ] Fix Identification

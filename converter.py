@@ -34,7 +34,7 @@ class Converter:
         return text
 
     @staticmethod
-    def quiz_to_pdf(assessment, type):
+    def quiz_to_pdf(quiz, type):
         """
         Convert a quiz assessment in JSON format to a PDF document.
 
@@ -50,7 +50,7 @@ class Converter:
         """
 
         # Create a PDF document
-        pdf_canvas = canvas.Canvas(rf"Project Files\quiz_{type}.pdf", pagesize=letter)
+        pdf_canvas = canvas.Canvas(rf"media\outputs\quiz_{type}.pdf", pagesize=letter)
 
         pdf_canvas.setFont("Helvetica-Bold", 14)
         pdf_canvas.drawString(50, 770, f"{type}")
@@ -58,7 +58,7 @@ class Converter:
 
 
         # Extract information from the JSON
-        questions = assessment.get("questions", [])
+        questions = quiz.get("questions", [])
 
         # Add content to the PDF
         pdf_canvas.setFont("Helvetica", 12)
@@ -131,7 +131,7 @@ class Converter:
         pdf_canvas.save()
 
     @staticmethod
-    def quiz_answer_key(assessment, type):
+    def quiz_answer_key(quiz, type):
         """
         Generate an answer key PDF for a quiz assessment.
 
@@ -147,10 +147,10 @@ class Converter:
         """
 
         # Get the questions from the assessment
-        questions = assessment.get("questions", [])
+        questions = quiz.get("questions", [])
 
         # Create a PDF document for the answer key
-        pdf_canvas = canvas.Canvas(fr"Project Files\quiz_answer_key_{type}.pdf", pagesize=letter)
+        pdf_canvas = canvas.Canvas(rf"media\outputs\quiz_answer_key_{type}.pdf", pagesize=letter)
 
         # Add content to the PDF
         pdf_canvas.setFont("Helvetica", 12)
@@ -194,7 +194,7 @@ class Converter:
         """
 
         # Create a PDF document
-        pdf_canvas = canvas.Canvas(r"Project Files\exam.pdf", pagesize=letter)
+        pdf_canvas = canvas.Canvas(r"media\outputs\exam.pdf", pagesize=letter)
 
         # Add a header to the PDF
         pdf_canvas.setFont("Helvetica-Bold", 14)
@@ -271,7 +271,7 @@ class Converter:
         """
 
         # Create a PDF document for the answer key
-        pdf_canvas = canvas.Canvas(r"Project Files\exam_answer_key.pdf", pagesize=letter)
+        pdf_canvas = canvas.Canvas(r"media\outputs\exam_answer_key.pdf", pagesize=letter)
 
         # Add content to the PDF
         pdf_canvas.setFont("Helvetica", 12)
@@ -345,7 +345,7 @@ class Converter:
         return lines
 
     @staticmethod
-    def quiz_to_gift(json_data, output_file):
+    def quiz_to_gift(quiz):
         """
         Convert a quiz assessment in JSON format to a GIFT (General Import Format Template) file.
 
@@ -360,8 +360,8 @@ class Converter:
 
         gift_string = ""
 
-        for question_data in json_data["questions"]:
-            question_type = json_data["type"]
+        for question_data in quiz["questions"]:
+            question_type = quiz["type"]
             question_text = question_data["question"]
 
             if question_type == "Multiple Choice":
@@ -398,11 +398,11 @@ class Converter:
                 gift_string += f"::Question::{question_text}?\n"
 
         # Save the GIFT content to the specified output file
-        with open(output_file, "w") as file:
+        with open(r"media\outputs\quiz_gift.txt", "w") as file:
             file.write(gift_string)
 
     @staticmethod
-    def exam_to_gift(exam, output_file):
+    def exam_to_gift(exam):
         """
         Convert an exam assessment in JSON format to a GIFT (General Import Format Template) file.
         
@@ -460,7 +460,7 @@ class Converter:
                     gift_string += f"::Question::{question_text}?\n"
 
         # Save the GIFT content to the specified output file
-        with open(output_file, "w") as file:
+        with open(r"media\outputs\exam_gift.txt", "w") as file:
             file.write(gift_string)
 
         return gift_string
