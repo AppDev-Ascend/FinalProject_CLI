@@ -18,13 +18,13 @@ assessment_json = ai.get_quiz(type, question_number, learning_outcomes)
 
 print(f"{assessment_json}")
 
-# Use Files to Convert
-# with open(r"Project Files\assessment_exam.json", 'r') as f:
+# Test the Converter
+# with open(r"Project Files\quiz_Identification.json", 'r') as f:
 #     assessment_json = json.load(f)
 
 # print("Converting Assessment to PDF... \n\n")
 # # Save the Lesson to a PDF file
-# Converter.quiz_to_pdf(assessment_json, "")
+# Converter.quiz_to_pdf(assessment_json, "Indentification")
 
 # print("Creating Answer Key... \n\n")
-# Converter.quiz_answer_key(assessment_json)
+# Converter.quiz_answer_key(assessment_json, "Identification")
