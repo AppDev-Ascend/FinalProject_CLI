@@ -2,24 +2,14 @@
     "type": "Multiple Choice",
     "questions": [
         {
-            "question": "Which of the following is NOT a key component of the Prototype Pattern?",
+            "question": "",
             "options": [
-                "Prototype",
-                "Concrete Prototype",
-                "Client",
-                "Factory"
+                "",
+                "",
+                "",
+                ""
             ],
-            "answer": 4
-        },
-        {
-            "question": "What is the purpose of the Prototype Pattern?",
-            "options": [
-                "To create objects by copying an existing object",
-                "To create objects using a factory method",
-                "To create objects by initializing them from scratch",
-                "To create objects by subclassing"
-            ],
-            "answer": 1
+            "answer": 0
         }
     ]
 }

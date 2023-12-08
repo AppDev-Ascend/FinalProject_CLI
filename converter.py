@@ -23,6 +23,8 @@ class Converter:
         - The method returns the extracted text content from the PDF.
         """
 
+        print("Converting PDF to Text... \n\n")
+
         poppler_path = r'poppler-23.11.0\Library\bin'
         pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
         images = convert_from_path(pdf_path, poppler_path=poppler_path)
@@ -31,6 +33,9 @@ class Converter:
             text += f'\nPage {i + 1}:\n\n'
             text += pytesseract.image_to_string(img, lang='eng')
 
+    
+        open(r"media\lessons\lesson.txt", "w").write(text)
+        
         return text
 
     @staticmethod

@@ -17,6 +17,8 @@ from llama_index.prompts.default_prompts import (
     DEFAULT_REFINE_PROMPT_TMPL,
 )
 
+from llama_index import StorageContext, load_index_from_storage
+
 class Question(BaseModel):
     question: str
     options: List[str]
@@ -33,45 +35,79 @@ class AssessmentGenerator:
         openai.api_key = os.getenv("OPENAI_API_KEY")
 
     def get_quiz(self, assessment_type, number_of_questions, learning_outcomes) -> dict:
-
-        print(f"\n\nGenerating a Quiz that contains {number_of_questions} {assessment_type} Questions...\n\n")
+        
+        print(f"\n\nGenerating a Quiz that contains {number_of_questions} {assessment_type} questions...\n\n")
         assessment = ""
 
         formatted_learning_outcomes = "\n".join(learning_outcomes)
 
         # Create a new index
+        # For New Data
         documents = SimpleDirectoryReader(r"media\upload").load_data()
         index = VectorStoreIndex.from_documents(documents)
-
-        prompt = """
-            Query string here.
-
-            ${gr.xml_prefix_prompt}
-
-            ${output_schema}
-
-            ${gr.json_suffix_prompt_v2_wo_none}
-        """
-        # Create a guard object
-        guard = gd.Guard.from_pydantic(output_class=Response, prompt=prompt)
-
-        # Create output parse object
-        output_parser = GuardrailsOutputParser(guard)
-
-
-        fmt_qa_tmpl = output_parser.format(DEFAULT_TEXT_QA_PROMPT_TMPL)
-        fmt_refine_tmpl = output_parser.format(DEFAULT_REFINE_PROMPT_TMPL)
-
-        qa_prompt = PromptTemplate(fmt_qa_tmpl, output_parser=output_parser)
-        refine_prompt = PromptTemplate(fmt_refine_tmpl, output_parser=output_parser)
-
-        query_engine = index.as_query_engine(
-            text_qa_template=qa_prompt,
-            refine_template=refine_prompt,
-        )
         
-        response = query_engine.query(f"Generate 20 questions that will be able to assess if the student learned these learning outcomes: \n\n {formatted_learning_outcomes}\n\n")
-        print(response)
+        
+        # For Persistent Data, used for testing only
+        index.storage_context.persist(r"media\index")
+        
+        # storage_context = StorageContext.from_defaults(persist_dir="<persist_dir>")
+        # index = load_index_from_storage(storage_context)
+
+        # Create response format
+        match(assessment_type):
+            case "Multiple Choice" | "multiple choice":
+                response_format = "<Insert Question Here>\n<Insert Option 1 Here>\n<Insert Option 2 Here>\n<Insert Option 3 Here>\n<Insert Option 4 Here>\n<Insert Answer Here>"
+            case "Identification" | "identification" | "True or False" | "true or false" | "Fill in the Blanks" | "fill in the blanks":
+                response_format = "<Insert Question Here> \n<Insert Answer Here>"
+            case "Essay" | "essay":
+                response_format = "<Insert Question Here>"
+                        
+
+        # Format for the prompt
+        my_prompt = f"Generate {number_of_questions} {assessment_type} questions that with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n that outputs the question in this format: \n {response_format}. If there are multiple questions, separate them with one line."
+
+        query_engine = index.as_query_engine(response_mode="compact")
+        assessment = query_engine.query(my_prompt)
+        
+        # Test 
+        print(assessment)
+
+        # Split the string into lines
+        lines = assessment.strip().split("\n")
+
+        # The first line is the question
+        question_text = lines[0][3:].strip()
+
+        # The last line is the answer
+        answer_text = lines[-1]
+
+        # The middle lines are the options
+        options = [line[3:].strip() for line in lines[1:-1]]
+
+        # Extract the answer letter and convert it to an index
+        answer_letter = answer_text.split(": ")[1]
+        answer_index = ord(answer_letter) - ord('a')
+
+        # Create the JSON data
+        json_data = {
+            "type": "Multiple Choice",
+            "questions": [
+                {
+                    "question": question_text,
+                    "options": options,
+                    "answer": answer_index
+                }
+            ]
+        }
+
+        # Print the JSON data
+        print(json_data)
+
+        with open(fr'media\assessments\quiz_{assessment_type}.json', 'w') as f:
+            json.dump(json_data, f)
+    
+        return assessment
+
 
     def get_exam(self, lesson, exam_format, learning_outcomes) -> dict:
          

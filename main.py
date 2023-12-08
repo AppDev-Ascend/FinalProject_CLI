@@ -11,12 +11,16 @@ question_number = 5
 
 # Change Learning Outcomes Here
 learning_outcomes = [
-    "1. Identify the purpose of the Prototype Pattern.",
-    "2. Understand the benefits of the Prototype Pattern"
+    "Understand the concept and usage of the Prototype Design Pattern",
+    "Explain the benefits and drawbacks of using the Prototype Design Pattern"
 ]
+
+# Generate Assessment with no index
+# assessment_json = ai.get_quiz(lesson, type, question_number, learning_outcomes)
+
+# Generate Assessment with index
 assessment_json = ai.get_quiz(type, question_number, learning_outcomes)
 
-print(f"{assessment_json}")
 
 # Test the Converter
 # with open(r"Project Files\quiz_Identification.json", 'r') as f:
