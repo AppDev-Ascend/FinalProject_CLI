@@ -59,12 +59,12 @@ class AssessmentGenerator:
         print(f"\n\nGenerating a Quiz that contains {number_of_questions} {assessment_type} questions...\n\n")
         assessment = ""
 
-        formatted_learning_outcomes = "\n".join(learning_outcomes)
-
         if index is None:
             if lesson == "":
+                print("Loading the Documents")
                 documents = SimpleDirectoryReader(r"media\upload").load_data()
             else:
+                print("Storing the Lesson")
                 with open(r'media\upload\lesson.txt', 'w') as f:
                     f.write(lesson)
                 documents = SimpleDirectoryReader(lesson).load_data()
@@ -93,7 +93,7 @@ class AssessmentGenerator:
                                     "question": "Question", \
                                     "answer": "Answer" \
                                 }\n\
-                                Separate each question with a new line.\n\
+                                Do not include numbers in the questions. Separate each question with a new line.\n\
                                 Respond only with the output in the exact format specified, with no explanation or conversation.'
 
             case "Fill in the Blanks" | "fill in the blanks":
@@ -103,7 +103,7 @@ class AssessmentGenerator:
                                     "question": "Question with blank", \
                                     "answer": "Answer" \
                                 }\n\
-                                Separate each question with a new line.\n\
+                                Do not include numbers in the questions. Separate each question with a new line.\n\
                                 Respond only with the output in the exact format specified, with no explanation or conversation.'
             case "Essay" | "essay":
                 question = "essay questions"
@@ -111,16 +111,20 @@ class AssessmentGenerator:
                                 { \
                                     "question": "Question", \
                                 }\n\
-                                Separate each question with a new line.\n\
+                                Do not include numbers in the questions. Separate each question with a new line.\n\
                                 Respond only with the output in the exact format specified, with no explanation or conversation.'
             case _:
                 print("Invalid Assessment Type")                        
 
         # Format for the prompt
-        if exclude_questions:
-            my_prompt = f"Generate {number_of_questions} {question} that is aligned with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n. Make sure the questions that are in the context are excluded.{response_format}"
+        if learning_outcomes == []:
+            my_prompt = f"Generate {number_of_questions} {question}.\n\n{response_format}"
         else:
+            formatted_learning_outcomes = "\n".join(learning_outcomes)
             my_prompt = f"Generate {number_of_questions} {question} that is aligned with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n.{response_format}"
+        
+        if exclude_questions:
+            my_prompt = my_prompt + "\n\n. Make sure the questions that are in the context are excluded.{response_format}"
         
         print("Creating Query Engine...")
         query_engine = index.as_query_engine(response_mode="refine")
@@ -142,7 +146,10 @@ class AssessmentGenerator:
                 question = json.loads(line)
                 quiz["questions"].append(question)
 
+        print(quiz)
+
         # Save the JSON data to a file
+        print("Saving to a JSON file...")
         with open(fr'media\assessments\quiz_{assessment_type.lower().replace(" ", "_")}.json', 'w') as f:
             json.dump(quiz, f)
         
@@ -170,9 +177,6 @@ class AssessmentGenerator:
         excluded_questions = ""
 
         for section in exam_format:
-            
-            
-
             section_name, assessment_type, question_count = section
 
             print(f"Generating {section_name}...\n\n")

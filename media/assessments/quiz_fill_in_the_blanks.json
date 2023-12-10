@@ -1,1 +1,45 @@
-{"type": "Fill in the Blanks", "questions": [{"question": "The prototype pattern is used to create new _______ by copying existing templates.", "answer": "game characters"}, {"question": "In graphical user interfaces, the prototype pattern is used to create copies of ________ to save time and resources.", "answer": "GUI components"}, {"question": "When working with databases, the prototype pattern is used to clone ________ records.", "answer": "database"}, {"question": "The prototype pattern can be implemented using ________ mechanisms.", "answer": "cloning"}, {"question": "The decision to use shallow or deep cloning depends on the ________ between objects.", "answer": "relationships"}, {"question": "A prototype registry can be used when dealing with a large number of ________ objects.", "answer": "prototype"}, {"question": "Prototype objects serve as ________ for creating new objects.", "answer": "templates"}, {"question": "Prototype objects should be clear, complete, and well-documented, describing their properties, behaviors, and ________.", "answer": "intended use"}, {"question": "The prototype pattern is useful for creating similar ________ with different attributes.", "answer": "characters"}, {"question": "The prototype pattern can help save time and resources, especially when making something ________ or that takes a lot of effort.", "answer": "difficult"}]}
+{
+    "type": "Fill in the Blanks",
+    "questions": [
+        {
+            "question": "The prototype pattern is used to create new _______ by copying existing templates.",
+            "answer": "game characters"
+        },
+        {
+            "question": "In graphical user interfaces, the prototype pattern is used to create copies of ________ to save time and resources.",
+            "answer": "GUI components"
+        },
+        {
+            "question": "When working with databases, the prototype pattern is used to clone ________ records.",
+            "answer": "database"
+        },
+        {
+            "question": "The prototype pattern can be implemented using ________ mechanisms.",
+            "answer": "cloning"
+        },
+        {
+            "question": "The decision to use shallow or deep cloning depends on the ________ between objects.",
+            "answer": "relationships"
+        },
+        {
+            "question": "A prototype registry can be used when dealing with a large number of ________ objects.",
+            "answer": "prototype"
+        },
+        {
+            "question": "Prototype objects serve as ________ for creating new objects.",
+            "answer": "templates"
+        },
+        {
+            "question": "Prototype objects should be clear, complete, and well-documented, describing their properties, behaviors, and ________.",
+            "answer": "intended use"
+        },
+        {
+            "question": "The prototype pattern is useful for creating similar ________ with different attributes.",
+            "answer": "characters"
+        },
+        {
+            "question": "The prototype pattern can help save time and resources, especially when making something ________ or that takes a lot of effort.",
+            "answer": "difficult"
+        }
+    ]
+}

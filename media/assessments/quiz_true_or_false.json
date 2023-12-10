@@ -1,1 +1,45 @@
-{"type": "True or False", "questions": [{"question": "What is the Prototype Design Pattern?", "answer": "True"}, {"question": "Is the Prototype Design Pattern used in software development?", "answer": "True"}, {"question": "Does the Prototype Design Pattern involve creating copies of existing objects?", "answer": "True"}, {"question": "Is the Prototype Design Pattern useful for creating similar objects with different attributes?", "answer": "True"}, {"question": "Can the Prototype Design Pattern be used in game development?", "answer": "True"}, {"question": "Can the Prototype Design Pattern be used in graphical user interfaces?", "answer": "True"}, {"question": "Does the Prototype Design Pattern involve cloning database records?", "answer": "True"}, {"question": "Are there benefits to using the Prototype Design Pattern?", "answer": "True"}, {"question": "Are there drawbacks to using the Prototype Design Pattern?", "answer": "True"}, {"question": "Is it important to document and train team members in the use of the Prototype Design Pattern?", "answer": "True"}]}
+{
+    "type": "True or False",
+    "questions": [
+        {
+            "question": "What is the Prototype Design Pattern?",
+            "answer": "True"
+        },
+        {
+            "question": "Is the Prototype Design Pattern used in software development?",
+            "answer": "True"
+        },
+        {
+            "question": "Does the Prototype Design Pattern involve creating copies of existing objects?",
+            "answer": "True"
+        },
+        {
+            "question": "Is the Prototype Design Pattern useful for creating similar objects with different attributes?",
+            "answer": "True"
+        },
+        {
+            "question": "Can the Prototype Design Pattern be used in game development?",
+            "answer": "True"
+        },
+        {
+            "question": "Can the Prototype Design Pattern be used in graphical user interfaces?",
+            "answer": "True"
+        },
+        {
+            "question": "Does the Prototype Design Pattern involve cloning database records?",
+            "answer": "True"
+        },
+        {
+            "question": "Are there benefits to using the Prototype Design Pattern?",
+            "answer": "True"
+        },
+        {
+            "question": "Are there drawbacks to using the Prototype Design Pattern?",
+            "answer": "True"
+        },
+        {
+            "question": "Is it important to document and train team members in the use of the Prototype Design Pattern?",
+            "answer": "True"
+        }
+    ]
+}

@@ -2,8 +2,8 @@
     "type": "Exam",
     "sections": [
         {
-            "section_name": "Test 1",
-            "section_type": "Multiple Choice",
+            "name": "Test 1",
+            "type": "Multiple Choice",
             "questions": [
                 {
                     "question": "What is the purpose of the Prototype Design Pattern?",
@@ -28,8 +28,8 @@
             ]
         },
         {
-            "section_name": "Test 2",
-            "section_type": "True or False",
+            "name": "Test 2",
+            "type": "True or False",
             "questions": [
                 {
                     "question": "The Prototype Design Pattern is used in software development to create new objects by copying existing objects.",
@@ -42,8 +42,8 @@
             ]
         },
         {
-            "section_name": "Test 2",
-            "section_type": "Essay",
+            "name": "Test 3",
+            "type": "Essay",
             "questions": [
                 {
                     "question": "1. Explain the concept of the Prototype Design Pattern and how it is used in software development. What are the key characteristics of this pattern?"

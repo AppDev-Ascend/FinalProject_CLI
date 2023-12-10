@@ -3,8 +3,34 @@ import pytesseract
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
+from pdf2image import convert_from_path
+import pytesseract
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from docx import Document
+from docx.enum.text import WD_BREAK
 
 class Converter:
+
+    @staticmethod
+    def wrap_text(text, max_length):
+        """Wrap text to limit the line length and return a list of strings."""
+        words = text.split()
+        lines = []
+        current_line = ""
+
+        for word in words:
+            if len(current_line) + len(word) + 1 <= max_length:
+                current_line += word + " "
+            else:
+                lines.append(current_line.strip())
+                current_line = word + " "
+
+        if current_line:
+            lines.append(current_line.strip())
+
+        return lines
 
     @staticmethod
     def pdf_to_text(pdf_path):
@@ -34,12 +60,13 @@ class Converter:
             text += pytesseract.image_to_string(img, lang='eng')
 
     
-        open(r"media\lessons\lesson.txt", "w").write(text)
+        with open(r"media\lessons\lesson.txt", "w") as f:
+            f.write(text)
         
         return text
 
     @staticmethod
-    def quiz_to_pdf(quiz, type):
+    def quiz_to_pdf(quiz):
         """
         Convert a quiz assessment in JSON format to a PDF document.
 
@@ -54,9 +81,10 @@ class Converter:
         - The assessment dictionary should have the structure consistent with the expected format for the given type.
         """
 
+        
         # Create a PDF document
-        pdf_canvas = canvas.Canvas(rf"media\outputs\quiz_{type}.pdf", pagesize=letter)
-
+        type = quiz["type"]
+        pdf_canvas = canvas.Canvas(fr'media\outputs\quiz_{type.lower().replace(" ", "_")}.pdf', pagesize=letter)
         pdf_canvas.setFont("Helvetica-Bold", 14)
         pdf_canvas.drawString(50, 770, f"{type}")
         pdf_canvas.setFont("Helvetica", 12)
@@ -136,7 +164,7 @@ class Converter:
         pdf_canvas.save()
 
     @staticmethod
-    def quiz_answer_key(quiz, type):
+    def quiz_answer_key(quiz):
         """
         Generate an answer key PDF for a quiz assessment.
 
@@ -152,15 +180,13 @@ class Converter:
         """
 
         # Get the questions from the assessment
+        type = quiz["type"]
         questions = quiz.get("questions", [])
 
         # Create a PDF document for the answer key
-        pdf_canvas = canvas.Canvas(rf"media\outputs\quiz_answer_key_{type}.pdf", pagesize=letter)
-
+        pdf_canvas = canvas.Canvas(fr'media\outputs\quiz_answer_key_{type.lower().replace(" ", "_")}.pdf', pagesize=letter)
         # Add content to the PDF
         pdf_canvas.setFont("Helvetica", 12)
-
-        
 
         y_position = 780
         for index, question in enumerate(questions, start=1):
@@ -181,6 +207,138 @@ class Converter:
 
         # Save the PDF
         pdf_canvas.save()
+
+    @staticmethod
+    def quiz_to_gift(quiz):
+        """
+        Convert a quiz assessment in JSON format to a GIFT (General Import Format Template) file.
+
+        Parameters:
+        - json_data (dict): The quiz assessment in dictionary format.
+        - output_file (str): The path to the output GIFT file.
+
+        Note:
+        - This method supports various types of quiz questions (Multiple Choice, Identification, True or False, Fill in the Blanks, Essay).
+        - The GIFT file is created based on the input JSON data and saved to the specified output file.
+        """
+
+        gift_string = ""
+        quiz_type = quiz["type"]
+
+        for question_data in quiz["questions"]:
+            question_type = quiz_type
+            question_text = question_data["question"]
+
+            if question_type == "Multiple Choice":
+                options = question_data.get("options", [])
+                correct_answer_index = question_data.get("answer", 0)
+
+                gift_string += f"::Question::{question_text}?\n"
+                for i, option in enumerate(options):
+                    if i == correct_answer_index:
+                        gift_string += f"= {option}\n"
+                    else:
+                        gift_string += f"~ {option}\n"
+
+            elif question_type == "Identification":
+                correct_answer = question_data.get("answer", "")
+
+                gift_string += f"::Question::{question_text}?\n= {correct_answer}\n"
+
+            elif question_type == "True or False":
+                correct_answer = question_data.get("answer", False)
+
+                gift_string += f"::Question::{question_text}?\n"
+                if correct_answer:
+                    gift_string += "= True\n~ False\n"
+                else:
+                    gift_string += "= False\n~ True\n"
+
+            elif question_type == "Fill in the Blanks":
+                correct_answer = question_data.get("answer", "")
+
+                gift_string += f"::Question::{question_text} is ___?\n= {correct_answer}\n"
+
+            elif question_type == "Essay":
+                gift_string += f"::Question::{question_text}?\n"
+
+        # Save the GIFT content to the specified output file
+        with open(fr'media\outputs\quiz_{quiz_type.lower().replace(" ", "_")}_gift.txt', "w") as file:
+            file.write(gift_string)
+    
+    @staticmethod
+    def quiz_to_docx(quiz):
+        document = Document()
+
+        # Get the type of the quiz
+        quiz_type = quiz["type"]
+        document.add_heading(quiz_type, level=1)
+
+        match(quiz_type.lower()):
+            case "multiple choice":
+                # Add questions to the document
+                for i, question_data in enumerate(quiz["questions"], start=1):
+                    question_text = f"{i}. {question_data['question']}"
+                    document.add_paragraph(question_text, style="Body Text")
+
+                    for j, option in enumerate(question_data["options"], start=1):
+                        option_text = f"  {chr(64 + j)}. {option}"
+                        document.add_paragraph(option_text)
+
+                    # Add space between questions
+                    document.add_paragraph()
+
+                # Add page break before answers
+                document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+
+                # Add answers
+                document.add_heading("Answer Key", level=1)
+                for i, question_data in enumerate(quiz["questions"], start=1):
+                    answer_index = question_data["answer"] - 1
+                    correct_answer = question_data["options"][answer_index]
+                    answer_text = f"Question {i}: {chr(65 + answer_index)}. {correct_answer}"
+                    document.add_paragraph(answer_text, style="Body Text")
+            
+            case "essay":
+                for i, question_data in enumerate(quiz["questions"], start=1):
+                    question_text = f"{i}. {question_data['question']}"
+                    document.add_paragraph(question_text, style="Body Text")
+
+            case "identification":
+                for i, question_data in enumerate(quiz["questions"], start=1):
+                    question_text = f"________ {i}. {question_data['question']}"
+                    document.add_paragraph(question_text, style="Body Text")
+
+                # Add page break before answers
+                document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+
+                # Add answers
+                document.add_heading("Answer Key", level=1)
+                for i, question_data in enumerate(quiz["questions"], start=1):
+                    correct_answer = question_data["answer"]
+                    answer_text = f"Question {i}: {correct_answer}"
+                    document.add_paragraph(answer_text, style="Body Text")
+        
+            case "true or false" | "fill in the blanks":
+                for i, question_data in enumerate(quiz["questions"], start=1):
+                    question_text = f"{i}. {question_data['question']}"
+                    document.add_paragraph(question_text, style="Body Text")
+
+                # Add page break before answers
+                document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+
+                # Add answers
+                document.add_heading("Answer Key", level=1)
+                for i, question_data in enumerate(quiz["questions"], start=1):
+                    correct_answer = question_data["answer"]
+                    answer_text = f"Question {i}: {correct_answer}"
+                    document.add_paragraph(answer_text, style="Body Text")
+
+        # Save the document
+        file_path = fr'media\outputs\quiz_{quiz_type.lower().replace(" ", "_")}.docx'
+        document.save(file_path)
+
+        print(f"DOCX file '{file_path}' has been created.")
 
     @staticmethod
     def exam_to_pdf(exam):
@@ -215,11 +373,11 @@ class Converter:
         for section in exam["sections"]:
             # Add section name to the PDF
             pdf_canvas.setFont("Helvetica-Bold", 12)
-            pdf_canvas.drawString(x_position, y_position, section["section_type"])
+            pdf_canvas.drawString(x_position, y_position, section["name"])
             pdf_canvas.setFont("Helvetica", 12)
             y_position -= line_height  # Adjust the vertical position for the section name
 
-            questions = section["questions"]["questions"]
+            questions = section["questions"]
             for index, question in enumerate(questions, start=1):
                 y_position -= line_height  # Adjust the vertical position for each question
 
@@ -235,7 +393,7 @@ class Converter:
                     y_position -= line_height
 
                 # Add options to the PDF if it's a Multiple Choice section
-                if section["section_type"] == "Multiple Choice":
+                if section["type"] == "Multiple Choice":
                     options = question.get("options", [])
                     for option_index, option in enumerate(options, start=1):
                         y_position -= line_height  # Adjust the vertical position for each option
@@ -260,7 +418,6 @@ class Converter:
 
     @staticmethod
     def exam_answer_key(exam):
-
         """
         Generate an answer key PDF for an exam assessment.
 
@@ -330,81 +487,6 @@ class Converter:
         # Save the PDF
         pdf_canvas.save()
 
-    @staticmethod
-    def wrap_text(text, max_length):
-        """Wrap text to limit the line length and return a list of strings."""
-        words = text.split()
-        lines = []
-        current_line = ""
-
-        for word in words:
-            if len(current_line) + len(word) + 1 <= max_length:
-                current_line += word + " "
-            else:
-                lines.append(current_line.strip())
-                current_line = word + " "
-
-        if current_line:
-            lines.append(current_line.strip())
-
-        return lines
-
-    @staticmethod
-    def quiz_to_gift(quiz):
-        """
-        Convert a quiz assessment in JSON format to a GIFT (General Import Format Template) file.
-
-        Parameters:
-        - json_data (dict): The quiz assessment in dictionary format.
-        - output_file (str): The path to the output GIFT file.
-
-        Note:
-        - This method supports various types of quiz questions (Multiple Choice, Identification, True or False, Fill in the Blanks, Essay).
-        - The GIFT file is created based on the input JSON data and saved to the specified output file.
-        """
-
-        gift_string = ""
-
-        for question_data in quiz["questions"]:
-            question_type = quiz["type"]
-            question_text = question_data["question"]
-
-            if question_type == "Multiple Choice":
-                options = question_data.get("options", [])
-                correct_answer_index = question_data.get("answer", 0)
-
-                gift_string += f"::Question::{question_text}?\n"
-                for i, option in enumerate(options):
-                    if i == correct_answer_index:
-                        gift_string += f"= {option}\n"
-                    else:
-                        gift_string += f"~ {option}\n"
-
-            elif question_type == "Identification":
-                correct_answer = question_data.get("answer", "")
-
-                gift_string += f"::Question::{question_text}?\n= {correct_answer}\n"
-
-            elif question_type == "True or False":
-                correct_answer = question_data.get("answer", False)
-
-                gift_string += f"::Question::{question_text}?\n"
-                if correct_answer:
-                    gift_string += "= True\n~ False\n"
-                else:
-                    gift_string += "= False\n~ True\n"
-
-            elif question_type == "Fill in the Blanks":
-                correct_answer = question_data.get("answer", "")
-
-                gift_string += f"::Question::{question_text} is ___?\n= {correct_answer}\n"
-
-            elif question_type == "Essay":
-                gift_string += f"::Question::{question_text}?\n"
-
-        # Save the GIFT content to the specified output file
-        with open(r"media\outputs\quiz_gift.txt", "w") as file:
-            file.write(gift_string)
 
     @staticmethod
     def exam_to_gift(exam):
@@ -469,3 +551,40 @@ class Converter:
             file.write(gift_string)
 
         return gift_string
+
+    
+    def exam_to_docx(exam):
+        document = Document()
+
+        document.add_heading(exam["type"], level=1)
+
+        for section in exam["sections"]:
+            section_name = section.get("name", "")
+            section_type = section.get("type", "")
+            document.add_heading(f"{section_name} - {section_type}", level=2)
+
+            for i, question_data in enumerate(section["questions"], start=1):
+                question_text = f"{i}. {question_data['question']}"
+                document.add_paragraph(question_text, style="Heading 2")
+
+                if section_type.lower() == "multiple choice":
+                    for j, option in enumerate(question_data["options"], start=1):
+                        option_text = f"{chr(64 + j)}. {option}"
+                        document.add_paragraph(option_text)
+                elif section_type.lower() == "true or false":
+                    document.add_paragraph("True or False")
+                elif section_type.lower() == "matching":
+                    document.add_paragraph("Matching")
+                elif section_type.lower() == "short answer":
+                    document.add_paragraph("Short Answer")
+                elif section_type.lower() == "essay":
+                    pass  # No specific handling for essay questions
+
+                # Add space between questions
+                document.add_paragraph()
+
+        # Save the document
+        file_path = fr'media\outputs\exam.docx'
+        document.save(file_path)
+
+        print(f"DOCX file '{file_path}' has been created.")

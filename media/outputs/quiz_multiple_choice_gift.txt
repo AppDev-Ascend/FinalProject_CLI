@@ -1,0 +1,10 @@
+::Question::What is the purpose of the Prototype Design Pattern??
+~ To create new game characters in game development
+~ To save time and resources in creating similar GUI components
+= To clone database records in working with databases
+~ To evaluate the architectural context of an application
+::Question::What is a benefit of using the Prototype Design Pattern??
+~ It allows for the creation of new game characters
+~ It saves time and resources in generating similar UI elements
+~ It provides a clear and complete documentation of prototype objects
+= It ensures consistent behavior and initial states of cloned objects
