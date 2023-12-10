@@ -3,30 +3,38 @@ import openai
 import os
 import json
 import time
-from llama_index import VectorStoreIndex, SimpleDirectoryReader, ServiceContext
-from llama_index.output_parsers import GuardrailsOutputParser
-from llama_index.program import OpenAIPydanticProgram
+from llama_index import VectorStoreIndex, SimpleDirectoryReader, Prompt
 
-from pydantic import BaseModel, Field
-from typing import List, Optional
-import guardrails as gd
-
-from llama_index.prompts import PromptTemplate
-from llama_index.prompts.default_prompts import (
-    DEFAULT_TEXT_QA_PROMPT_TMPL,
-    DEFAULT_REFINE_PROMPT_TMPL,
-)
-
+# For Persistent Data, used for testing only
 from llama_index import StorageContext, load_index_from_storage
+
+from llama_index.program import OpenAIPydanticProgram
+from pydantic import BaseModel
+from llama_index.llms import OpenAI
+from llama_index.callbacks import OpenAIFineTuningHandler
+from llama_index.callbacks import CallbackManager
+from typing import List
+
 
 class Question(BaseModel):
     question: str
     options: List[str]
     answer: int
 
-class Response(BaseModel):
+class Quiz(BaseModel):
     type: str
     questions: List[Question]
+
+class Section(BaseModel):
+    section_name: str
+    section_type: str
+    questions: List[Question]
+
+class Exam(BaseModel):
+    type: str
+    sections: List[Section]
+
+
 
 class AssessmentGenerator:
 
@@ -34,104 +42,153 @@ class AssessmentGenerator:
         load_dotenv()
         openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    def get_quiz(self, assessment_type, number_of_questions, learning_outcomes) -> dict:
+    def get_quiz(self, assessment_type, number_of_questions, learning_outcomes, lesson="", exclude_questions=False, index=None) -> dict:
         
         print(f"\n\nGenerating a Quiz that contains {number_of_questions} {assessment_type} questions...\n\n")
         assessment = ""
 
         formatted_learning_outcomes = "\n".join(learning_outcomes)
 
-        # Create a new index
-        # For New Data
-        documents = SimpleDirectoryReader(r"media\upload").load_data()
-        index = VectorStoreIndex.from_documents(documents)
+        if(index is None):
+            if lesson == "":
+                documents = SimpleDirectoryReader(r"media\upload").load_data()
+            else:
+                with open(r'media\upload\lesson.txt', 'w') as f:
+                    f.write(lesson)
+                documents = SimpleDirectoryReader(lesson).load_data()
+
+            index = VectorStoreIndex.from_documents(documents)
         
-        
-        # For Persistent Data, used for testing only
-        index.storage_context.persist(r"media\index")
-        
-        # storage_context = StorageContext.from_defaults(persist_dir="<persist_dir>")
-        # index = load_index_from_storage(storage_context)
 
         # Create response format
         match(assessment_type):
             case "Multiple Choice" | "multiple choice":
-                response_format = "<Insert Question Here>\n<Insert Option 1 Here>\n<Insert Option 2 Here>\n<Insert Option 3 Here>\n<Insert Option 4 Here>\n<Insert Answer Here>"
-            case "Identification" | "identification" | "True or False" | "true or false" | "Fill in the Blanks" | "fill in the blanks":
-                response_format = "<Insert Question Here> \n<Insert Answer Here>"
+                question = "multiple choice questions with important terms as an answer"
+                response_format = 'The result type should be provided in the following JSON data structure:\n\
+                                {\
+                                    "question": "Question", \
+                                    "options": ["Option 1", "Option 2", "Option 3", "Option 4"], \
+                                    "answer": "Index" \
+                                }\n\
+                                Separate each question with a new line.\n\
+                                Respond only with the output in the exact format specified, with no explanation or conversation.'
+
+            case "Identification" | "identification" | "True or False" | "true or false":
+                question = "identification questions where answers are important terms" if assessment_type == "Identification" else "true or false questions"
+                response_format = 'The result type should be provided in the following JSON data structure:\n\
+                                {\
+                                    "question": "Question", \
+                                    "answer": "Answer" \
+                                }\n\
+                                Separate each question with a new line.\n\
+                                Respond only with the output in the exact format specified, with no explanation or conversation.'
+
+            case "Fill in the Blanks" | "fill in the blanks":
+                question = "fill in the blanks questions with important terms as an answer"
+                response_format = 'The result type should be provided in the following JSON data structure:\n\
+                                {\
+                                    "question": "Question with blank", \
+                                    "answer": "Answer" \
+                                }\n\
+                                Separate each question with a new line.\n\
+                                Respond only with the output in the exact format specified, with no explanation or conversation.'
             case "Essay" | "essay":
-                response_format = "<Insert Question Here>"
-                        
+                question = "essay questions"
+                response_format = 'The result type should be provided in the following JSON data structure:\n\
+                                { \
+                                    "question": "Question", \
+                                }\n\
+                                Separate each question with a new line.\n\
+                                Respond only with the output in the exact format specified, with no explanation or conversation.'
+            case _:
+                print("Invalid Assessment Type")                        
 
         # Format for the prompt
-        my_prompt = f"Generate {number_of_questions} {assessment_type} questions that with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n that outputs the question in this format: \n {response_format}. If there are multiple questions, separate them with one line."
-
+        if exclude_questions:
+            my_prompt = f"Generate {number_of_questions} {question} that will assess students with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n. Make sure the questions that are in the context are excluded.{response_format}"
+        else:
+            my_prompt = f"Generate {number_of_questions} {question} that will assess students with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n.{response_format}"
+        
         query_engine = index.as_query_engine(response_mode="compact")
         assessment = query_engine.query(my_prompt)
         
-        # Test 
-        print(assessment)
+        print(assessment) 
 
-        # Split the string into lines
-        lines = assessment.strip().split("\n")
-
-        # The first line is the question
-        question_text = lines[0][3:].strip()
-
-        # The last line is the answer
-        answer_text = lines[-1]
-
-        # The middle lines are the options
-        options = [line[3:].strip() for line in lines[1:-1]]
-
-        # Extract the answer letter and convert it to an index
-        answer_letter = answer_text.split(": ")[1]
-        answer_index = ord(answer_letter) - ord('a')
-
-        # Create the JSON data
-        json_data = {
-            "type": "Multiple Choice",
-            "questions": [
-                {
-                    "question": question_text,
-                    "options": options,
-                    "answer": answer_index
-                }
-            ]
+        # Convert to JSON
+        assessment_str = str(assessment)
+        lines = assessment_str.splitlines()
+        quiz = {
+            "type": assessment_type,
+            "questions": []
         }
 
-        # Print the JSON data
-        print(json_data)
+        for line in lines:
+            if line != "":
+                question = json.loads(line)
+                quiz["questions"].append(question)
 
-        with open(fr'media\assessments\quiz_{assessment_type}.json', 'w') as f:
-            json.dump(json_data, f)
+        # Save the JSON data to a file
+        with open(fr'media\assessments\quiz_{assessment_type.lower().replace(" ", "_")}.json', 'w') as f:
+            json.dump(quiz, f)
+        
+        return quiz
     
-        return assessment
-
-
-    def get_exam(self, lesson, exam_format, learning_outcomes) -> dict:
-         
+    def get_exam(self, exam_format, learning_outcomes, lesson="") -> dict:
+        
         print("Generating an exam...\n\n")
+
+        if lesson == "":
+            documents = SimpleDirectoryReader(r"media\upload").load_data()
+        else:
+            with open(r'media\upload\lesson.txt', 'w') as f:
+                f.write(lesson)
+            documents = SimpleDirectoryReader(lesson).load_data()
+
+        index = VectorStoreIndex.from_documents(documents)
 
         exam = {
             "type": "Exam",
             "sections": []
         }
 
+        excluded_questions = ""
+
         for section in exam_format:
+            
+            # Can be removed if we moved to a better api
+            time.sleep(20)
+
             section_name, assessment_type, question_count = section
 
-            print(f"Generating Section {section_name}...\n\n")
-
-            questions = self.get_quiz(lesson, assessment_type, question_count, learning_outcomes)
+            print(f"Generating {section_name}...\n\n")
+            questions = self.get_quiz(assessment_type, question_count, learning_outcomes, exclude_questions=True, index=index)
+            
             exam["sections"].append({
                 "section_name": section_name,
                 "section_type": assessment_type,
                 "questions": questions
             })
 
-            # for testing purposes, since OpenAI has a limit of 3 requests per minute on a free account
-            time.sleep(20)
+            # Add excluded questions
+            # Define the path to the excluded questions file
+            excluded_questions_file_path = r'media\upload\excluded_questions.txt'
+
+            # Check if the file exists
+            if os.path.exists(excluded_questions_file_path):
+                # Read existing excluded questions
+                with open(excluded_questions_file_path, 'r') as f:
+                    existing_excluded_questions = f.read()
+            else:
+                # If the file doesn't exist, start with an empty string
+                existing_excluded_questions = ""
+
+            # Add new questions to the excluded list
+            for question in questions["questions"]:
+                existing_excluded_questions += question["question"] + "\n"
+
+            # Write the updated excluded questions back to the file
+            with open(excluded_questions_file_path, 'w') as f:
+                f.write(existing_excluded_questions)
 
         # Save exam to a json file
         with open(fr'media\exam.json', 'w') as f:
