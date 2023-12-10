@@ -37,10 +37,22 @@ class Exam(BaseModel):
 
 
 class AssessmentGenerator:
-
+    
     def __init__(self):
         load_dotenv()
         openai.api_key = os.getenv("OPENAI_API_KEY")
+
+
+    def read_excluded_questions(file_path):
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                return f.read()
+        else:
+            return ""
+    
+    def write_excluded_questions(file_path, questions):
+        with open(file_path, 'w') as f:
+            f.write(questions)
 
     def get_quiz(self, assessment_type, number_of_questions, learning_outcomes, lesson="", exclude_questions=False, index=None) -> dict:
         
@@ -49,7 +61,7 @@ class AssessmentGenerator:
 
         formatted_learning_outcomes = "\n".join(learning_outcomes)
 
-        if(index is None):
+        if index is None:
             if lesson == "":
                 documents = SimpleDirectoryReader(r"media\upload").load_data()
             else:
@@ -57,6 +69,7 @@ class AssessmentGenerator:
                     f.write(lesson)
                 documents = SimpleDirectoryReader(lesson).load_data()
 
+            print("Creating Index...")
             index = VectorStoreIndex.from_documents(documents)
         
 
@@ -105,11 +118,13 @@ class AssessmentGenerator:
 
         # Format for the prompt
         if exclude_questions:
-            my_prompt = f"Generate {number_of_questions} {question} that will assess students with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n. Make sure the questions that are in the context are excluded.{response_format}"
+            my_prompt = f"Generate {number_of_questions} {question} that is aligned with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n. Make sure the questions that are in the context are excluded.{response_format}"
         else:
-            my_prompt = f"Generate {number_of_questions} {question} that will assess students with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n.{response_format}"
+            my_prompt = f"Generate {number_of_questions} {question} that is aligned with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n.{response_format}"
         
-        query_engine = index.as_query_engine(response_mode="compact")
+        print("Creating Query Engine...")
+        query_engine = index.as_query_engine(response_mode="refine")
+        print("Querying the index...")
         assessment = query_engine.query(my_prompt)
         
         print(assessment) 
@@ -143,7 +158,8 @@ class AssessmentGenerator:
             with open(r'media\upload\lesson.txt', 'w') as f:
                 f.write(lesson)
             documents = SimpleDirectoryReader(lesson).load_data()
-
+        
+        print("Creating Index...")
         index = VectorStoreIndex.from_documents(documents)
 
         exam = {
@@ -155,12 +171,14 @@ class AssessmentGenerator:
 
         for section in exam_format:
             
-            # Can be removed if we moved to a better api
-            time.sleep(20)
+            
 
             section_name, assessment_type, question_count = section
 
             print(f"Generating {section_name}...\n\n")
+            
+            # Can be removed if we moved to a better api
+            time.sleep(20)
             questions = self.get_quiz(assessment_type, question_count, learning_outcomes, exclude_questions=True, index=index)
             
             exam["sections"].append({
@@ -170,25 +188,9 @@ class AssessmentGenerator:
             })
 
             # Add excluded questions
-            # Define the path to the excluded questions file
             excluded_questions_file_path = r'media\upload\excluded_questions.txt'
-
-            # Check if the file exists
-            if os.path.exists(excluded_questions_file_path):
-                # Read existing excluded questions
-                with open(excluded_questions_file_path, 'r') as f:
-                    existing_excluded_questions = f.read()
-            else:
-                # If the file doesn't exist, start with an empty string
-                existing_excluded_questions = ""
-
-            # Add new questions to the excluded list
-            for question in questions["questions"]:
-                existing_excluded_questions += question["question"] + "\n"
-
-            # Write the updated excluded questions back to the file
-            with open(excluded_questions_file_path, 'w') as f:
-                f.write(existing_excluded_questions)
+            existing_excluded_questions = self.read_excluded_questions(excluded_questions_file_path)
+            self.write_excluded_questions(excluded_questions_file_path, existing_excluded_questions)
 
         # Save exam to a json file
         with open(fr'media\exam.json', 'w') as f:

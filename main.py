@@ -23,31 +23,31 @@ learning_outcomes = [
 ]
 
 # Generate a Quiz
-# start_time = time.time()
-# assessment_json = ai.get_quiz(type, question_number, learning_outcomes, lesson="")
-# end_time = time.time()
-# elapsed_time = end_time - start_time
-# print(f"Elapsed time: {elapsed_time} seconds")
-
-# Generate an Exam
-
-exam_format = [
-    ("Test 1", "Multiple Choice", 10),
-    ("Test 2", "Identification", 10),
-    ("Test 3", "True or False", 10),
-    ("Test 4", "Fill in the Blanks", 10),
-    ("Test 5","Essay", 10)
-]
-
-# Start timer
 start_time = time.time()
-
-assessment_json = ai.get_exam(exam_format, learning_outcomes)
-
-# End timer
+assessment_json = ai.get_quiz(type, question_number, learning_outcomes, lesson="")
 end_time = time.time()
 elapsed_time = end_time - start_time
 print(f"Elapsed time: {elapsed_time} seconds")
+
+# Generate an Exam
+
+# exam_format = [
+#     ("Test 1", "Multiple Choice", 10),
+#     ("Test 2", "Identification", 10),
+#     ("Test 3", "True or False", 10),
+#     ("Test 4", "Fill in the Blanks", 10),
+#     ("Test 5","Essay", 10)
+# ]
+
+# # Start timer
+# start_time = time.time()
+
+# assessment_json = ai.get_exam(exam_format, learning_outcomes)
+
+# # End timer
+# end_time = time.time()
+# elapsed_time = end_time - start_time
+# print(f"Elapsed time: {elapsed_time} seconds")
 
 # Test the Converter
 # with open(r"Project Files\quiz_Identification.json", 'r') as f:
