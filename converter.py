@@ -49,8 +49,6 @@ class Converter:
         - The method returns the extracted text content from the PDF.
         """
 
-        print("Converting PDF to Text... \n\n")
-
         poppler_path = r'poppler-23.11.0\Library\bin'
         pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
         images = convert_from_path(pdf_path, poppler_path=poppler_path)
@@ -99,7 +97,7 @@ class Converter:
         y_position = 750  # Adjusted starting position
         x_position = 50  # Adjusted starting position on the x-axis
         line_height = 10  # Adjusted line height
-        max_line_length = 80  # Adjusted maximum line length
+        max_line_length = 75  # Adjusted maximum line length
 
         for index, question in enumerate(questions, start=1):
             y_position -= 2 * line_height  # Adjust the vertical position for each question
@@ -178,35 +176,36 @@ class Converter:
         - The method supports different types of assessments, each with specific formatting for correct answers.
         - The assessment dictionary should have the structure consistent with the expected format for the given type.
         """
+        if quiz["type"].lower() != "essay":
 
-        # Get the questions from the assessment
-        type = quiz["type"]
-        questions = quiz.get("questions", [])
+            # Get the questions from the assessment
+            type = quiz["type"]
+            questions = quiz.get("questions", [])
 
-        # Create a PDF document for the answer key
-        pdf_canvas = canvas.Canvas(fr'media\outputs\quiz_answer_key_{type.lower().replace(" ", "_")}.pdf', pagesize=letter)
-        # Add content to the PDF
-        pdf_canvas.setFont("Helvetica", 12)
+            # Create a PDF document for the answer key
+            pdf_canvas = canvas.Canvas(fr'media\outputs\quiz_answer_key_{type.lower().replace(" ", "_")}.pdf', pagesize=letter)
+            # Add content to the PDF
+            pdf_canvas.setFont("Helvetica", 12)
 
-        y_position = 780
-        for index, question in enumerate(questions, start=1):
-            y_position -= 15  # Adjust the vertical position for each question
+            y_position = 780
+            for index, question in enumerate(questions, start=1):
+                y_position -= 15  # Adjust the vertical position for each question
 
-            if type == "Multiple Choice":
-                correct_answer = f"Question {index}: {chr(97 + question['answer'])}"
-            elif type == "Identification":
-                correct_answer = f"Question {index}: {question['answer']}"
-            elif type == "True or False":
-                correct_answer = f"Question {index}: {'True' if question['answer'] else 'False'}"
-            elif type == "Fill in the Blanks":
-                correct_answer = f"Question {index}: {question['answer']}"
+                if type == "Multiple Choice":
+                    correct_answer = f"Question {index}: {chr(97 + question['answer'])}. {question['options'][question['answer']]}"
+                elif type == "Identification":
+                    correct_answer = f"Question {index}: {question['answer']}"
+                elif type == "True or False":
+                    correct_answer = f"Question {index}: {'True' if question['answer'] else 'False'}"
+                elif type == "Fill in the Blanks":
+                    correct_answer = f"Question {index}: {question['answer']}"
 
-            pdf_canvas.drawString(120, y_position, correct_answer)
+                pdf_canvas.drawString(120, y_position, correct_answer)
 
-            y_position -= 25  # Adjust the vertical position for the next question
+                y_position -= 25  # Adjust the vertical position for the next question
 
-        # Save the PDF
-        pdf_canvas.save()
+            # Save the PDF
+            pdf_canvas.save()
 
     @staticmethod
     def quiz_to_gift(quiz):
@@ -338,8 +337,6 @@ class Converter:
         file_path = fr'media\outputs\quiz_{quiz_type.lower().replace(" ", "_")}.docx'
         document.save(file_path)
 
-        print(f"DOCX file '{file_path}' has been created.")
-
     @staticmethod
     def exam_to_pdf(exam):
         """
@@ -373,12 +370,15 @@ class Converter:
         for section in exam["sections"]:
             # Add section name to the PDF
             pdf_canvas.setFont("Helvetica-Bold", 12)
-            pdf_canvas.drawString(x_position, y_position, section["name"])
+            pdf_canvas.drawString(x_position, y_position, f"{section['name']} - {section['type']}")
+            
             pdf_canvas.setFont("Helvetica", 12)
             y_position -= line_height  # Adjust the vertical position for the section name
 
             questions = section["questions"]
+
             for index, question in enumerate(questions, start=1):
+                
                 y_position -= line_height  # Adjust the vertical position for each question
 
                 question_text = question.get("question", "")
@@ -446,12 +446,12 @@ class Converter:
         for section in exam["sections"]:
             # Add section name to the PDF
             pdf_canvas.setFont("Helvetica-Bold", 14)
-            if section["section_type"] != "Essay":
-                pdf_canvas.drawString(50, y_position, section["section_type"])
+            if section["type"] != "Essay":
+                pdf_canvas.drawString(50, y_position, section["type"])
             pdf_canvas.setFont("Helvetica", 12)
             y_position -= line_height  # Adjust the vertical position for the section name
 
-            questions = section["questions"]["questions"]
+            questions = section["questions"]
             for index, question in enumerate(questions, start=1):
                 y_position -= 2 * line_height  # Adjust the vertical position for each question
 
@@ -460,18 +460,18 @@ class Converter:
                     pdf_canvas.showPage()
                     y_position = 780  # Reset y_position for the new page
 
-                if section["section_type"] == "Multiple Choice":
-                    correct_answer = f"Question {index}: {chr(97 + question['answer'])}"
-                elif section["section_type"] == "Identification":
+                if section["type"] == "Multiple Choice":
+                    correct_answer = f"Question {index}: {chr(97 + question['answer'])}. {question['options'][question['answer']]}"
+                elif section["type"] == "Identification":
                     correct_answer = f"Question {index}: {question['answer']}"
-                elif section["section_type"] == "True or False":
+                elif section["type"] == "True or False":
                     correct_answer = f"Question {index}: {'True' if question['answer'] else 'False'}"
-                elif section["section_type"] == "Fill in the Blanks":
+                elif section["type"] == "Fill in the Blanks":
                     correct_answer = f"Question {index}: {question['answer']}"
-                elif section["section_type"] == "Essay":
+                elif section["type"] == "Essay":
                     pass
                 
-                if(section["section_type"] != "Essay"):
+                if(section["type"] != "Essay"):
                     wrapped_correct_answer = Converter.wrap_text(correct_answer, max_line_length)
                     for i, wrapped_question_line in enumerate(wrapped_correct_answer):
                         if i == 0:
@@ -486,7 +486,6 @@ class Converter:
 
         # Save the PDF
         pdf_canvas.save()
-
 
     @staticmethod
     def exam_to_gift(exam):
@@ -504,8 +503,8 @@ class Converter:
         gift_string = ""
 
         for section in exam["sections"]:
-            section_name = section["section_name"]
-            section_type = section["section_type"]
+            section_name = section["name"]
+            section_type = section["type"]
             questions = section["questions"]
 
             gift_string += f"::Section::{section_name}::{section_type}::\n"
@@ -552,7 +551,7 @@ class Converter:
 
         return gift_string
 
-    
+    @staticmethod
     def exam_to_docx(exam):
         document = Document()
 
@@ -569,22 +568,34 @@ class Converter:
 
                 if section_type.lower() == "multiple choice":
                     for j, option in enumerate(question_data["options"], start=1):
-                        option_text = f"{chr(64 + j)}. {option}"
+                        option_text = f"  {chr(64 + j)}. {option}"
                         document.add_paragraph(option_text)
-                elif section_type.lower() == "true or false":
-                    document.add_paragraph("True or False")
-                elif section_type.lower() == "matching":
-                    document.add_paragraph("Matching")
-                elif section_type.lower() == "short answer":
-                    document.add_paragraph("Short Answer")
-                elif section_type.lower() == "essay":
-                    pass  # No specific handling for essay questions
-
                 # Add space between questions
                 document.add_paragraph()
+            
+        # Add page break before answers
+        document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+
+        # Add answers
+        document.add_heading("Answer Key", level=1)
+        for section in exam["sections"]:
+            section_name = section.get("name", "")
+            section_type = section.get("type", "")
+            
+            if section_type.lower() != "essay":
+                document.add_heading(f"{section_name} - {section_type}", level=2)
+
+                if section_type.lower() == "multiple choice":
+                    for i, answer_data in enumerate(section["questions"], start=1):
+                        answer_index = answer_data["answer"] - 1
+                        correct_answer = answer_data["options"][answer_index]
+                        answer_text = f"{i}: {chr(65 + answer_index)}. {correct_answer}"
+                        document.add_paragraph(answer_text, style="Body Text")
+                else:
+                    for i, answer_data in enumerate(section["questions"], start=1):
+                        question_text = f"{i}. {answer_data['answer']}"
+                        document.add_paragraph(question_text, style="Body Text")
 
         # Save the document
         file_path = fr'media\outputs\exam.docx'
         document.save(file_path)
-
-        print(f"DOCX file '{file_path}' has been created.")
