@@ -1,1 +1,105 @@
-{"type": "Multiple Choice", "questions": [{"question": "What is the Prototype Design Pattern?", "options": ["A design pattern used in software development", "A pattern used to create new game characters", "A pattern used in graphical user interfaces", "A pattern used in database operations"], "answer": 0}, {"question": "How is the Prototype Design Pattern used in software development?", "options": ["To create new game characters", "To save time and resources in GUI development", "To clone database records", "To implement cloning mechanisms"], "answer": 3}, {"question": "In which context can the Prototype Design Pattern be used?", "options": ["Game development", "Graphical user interfaces", "Database operations", "All of the above"], "answer": 3}, {"question": "What is one benefit of using the Prototype Design Pattern in game development?", "options": ["Creating new game characters", "Saving time and resources", "Cloning database records", "Implementing cloning mechanisms"], "answer": 1}, {"question": "When working with databases, what can the Prototype Design Pattern be used for?", "options": ["Creating new game characters", "Saving time and resources", "Cloning database records", "Implementing cloning mechanisms"], "answer": 2}]}
+{
+    "type": "Multiple Choice",
+    "questions": [
+        {
+            "question": "What is the Prototype Design Pattern?",
+            "options": [
+                "A design pattern used in software development",
+                "A design pattern used in game development",
+                "A design pattern used in graphical user interfaces",
+                "A design pattern used in database operations"
+            ],
+            "answer": 0
+        },
+        {
+            "question": "How is the Prototype Design Pattern used in software development?",
+            "options": [
+                "To create new game characters by copying existing character templates",
+                "To create copies of GUI components to save time and resources",
+                "To clone database records with similar attributes",
+                "To implement cloning mechanisms for object creation"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "In which context can the Prototype Design Pattern be used?",
+            "options": [
+                "Game development",
+                "Graphical user interfaces",
+                "Database operations",
+                "All of the above"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "What is one benefit of using the Prototype Design Pattern in game development?",
+            "options": [
+                "Creating similar characters with different attributes",
+                "Saving time and resources when generating similar UI elements",
+                "Cloning database records with similar attributes",
+                "Implementing cloning mechanisms for object creation"
+            ],
+            "answer": 0
+        },
+        {
+            "question": "When working with databases, what can the Prototype Design Pattern be used for?",
+            "options": [
+                "Creating new game characters by copying existing character templates",
+                "Creating copies of GUI components to save time and resources",
+                "Cloning database records with similar attributes",
+                "Implementing cloning mechanisms for object creation"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "What is one drawback of using the Prototype Design Pattern?",
+            "options": [
+                "Requires clients to have knowledge of the specifics of object creation",
+                "Not applicable in database operations",
+                "Involves implementing cloning mechanisms to create new instances based on prototype objects",
+                "Cannot be used in game development"
+            ],
+            "answer": 0
+        },
+        {
+            "question": "What is one benefit of using the Prototype Design Pattern?",
+            "options": [
+                "Creating similar characters with different attributes",
+                "Saving time and resources when generating similar UI elements",
+                "Cloning database records with similar attributes",
+                "Implementing cloning mechanisms for object creation"
+            ],
+            "answer": 1
+        },
+        {
+            "question": "What is one drawback of using the Prototype Design Pattern in game development?",
+            "options": [
+                "Requires clients to have knowledge of the specifics of object creation",
+                "Not applicable in database operations",
+                "Involves implementing cloning mechanisms to create new instances based on prototype objects",
+                "Cannot be used in game development"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "What is one benefit of using the Prototype Design Pattern in graphical user interfaces?",
+            "options": [
+                "Creating similar characters with different attributes",
+                "Saving time and resources when generating similar UI elements",
+                "Cloning database records with similar attributes",
+                "Implementing cloning mechanisms for object creation"
+            ],
+            "answer": 1
+        },
+        {
+            "question": "What is one drawback of using the Prototype Design Pattern in database operations?",
+            "options": [
+                "Requires clients to have knowledge of the specifics of object creation",
+                "Not applicable in database operations",
+                "Involves implementing cloning mechanisms to create new instances based on prototype objects",
+                "Cannot be used in game development"
+            ],
+            "answer": 1
+        }
+    ]
+}

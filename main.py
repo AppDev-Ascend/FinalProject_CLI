@@ -6,52 +6,52 @@ import json
 ai = AssessmentGenerator()
 
 # Change the quiz filters here
-# quiz_type = "Multiple Choice"
+quiz_type = "Multiple Choice"
 # quiz_type = "Identification"
 # quiz_type = "True or False"
 # quiz_type = "Fill in the Blanks"
 # quiz_type = "Essay"
 
-# number_of_questions = 5
+number_of_questions = 10
 
 
-# # Change Learning Outcomes Here
-# learning_outcomes = [
-#     "Understand what the Prototype Design Pattern is and how it is used in software development",
-#     "Understand the concept and usage of the Prototype Design Pattern",
-#     "Explain the benefits and drawbacks of using the Prototype Design Pattern"
-# ]
-
-# # Generate a Quiz
-# start_time = time.time()
-# assessment_json = ai.get_quiz(quiz_type, number_of_questions, learning_outcomes=learning_outcomes)
-# end_time = time.time()
-# elapsed_time = end_time - start_time
-# print(f"Elapsed time: {elapsed_time} seconds")
-
-# Generate an Exam
-
-exam_format = [
-    ("Test 1", "Multiple Choice", 5, ["Understand what the Prototype Design Pattern is and how it is used in software development"]),
-    ("Test 3", "True or False", 5, ["Understand the concept and usage of the Prototype Design Pattern"]),
-    ("Test 5","Essay", 3, ["Explain the benefits and drawbacks of using the Prototype Design Pattern"])
+# Change Learning Outcomes Here
+learning_outcomes = [
+    "Understand what the Prototype Design Pattern is and how it is used in software development",
+    "Understand the concept and usage of the Prototype Design Pattern",
+    "Explain the benefits and drawbacks of using the Prototype Design Pattern"
 ]
 
-# Start timer
+# Generate a Quiz
 start_time = time.time()
-
-assessment_json = ai.get_exam(exam_format)
-
-# # End timer
+assessment_json = ai.get_quiz(quiz_type, number_of_questions, learning_outcomes=learning_outcomes)
 end_time = time.time()
 elapsed_time = end_time - start_time
 print(f"Elapsed time: {elapsed_time} seconds")
 
+# Generate an Exam
+
+# exam_format = [
+#     ("Test 1", "Multiple Choice", 5, ["Understand what the Prototype Design Pattern is and how it is used in software development"]),
+#     ("Test 3", "True or False", 5, ["Understand the concept and usage of the Prototype Design Pattern"]),
+#     ("Test 5","Essay", 3, ["Explain the benefits and drawbacks of using the Prototype Design Pattern"])
+# ]
+
+# # Start timer
+# start_time = time.time()
+
+# assessment_json = ai.get_exam(exam_format)
+
+# # # End timer
+# end_time = time.time()
+# elapsed_time = end_time - start_time
+# print(f"Elapsed time: {elapsed_time} seconds")
+
 # Test the Converter
 
 # Quiz
-# with open(fr'media\assessments\quiz_{quiz_type.lower().replace(" ", "_")}.json', 'r') as f:
-#    assessment_json = json.load(f)
+with open(fr'media\assessments\quiz_{quiz_type.lower().replace(" ", "_")}.json', 'r') as f:
+   assessment_json = json.load(f)
 
 
 # # Convert the Assessment to a PDF

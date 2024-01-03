@@ -22,17 +22,40 @@
    - If you encounter issues related to Tesseract during the project, ensure that the Tesseract executable is accessible and correctly configured in your code.
 
 ## To do (Delete this after finishing)
+# Assessment Generator
 - [X] Add File Upload Option (.txt)
 - [X] Add FIle Upload Option (.pdf)
 - [X] Add PDF to Text Converter Class
 - [X] Add Txt to Text Converter
-- [X] Convert Assessment to a JSON
 - [X] Add Saving Assessments to different File Types Class
-- [X] Convert Assessment (JSON) to PDF
-- [X] Convert Assessment (JSON) to GIFT
 - [X] Update JSON Format
 - [X] Check Format of New Assessment File Type
 - [X] Check the Exam Generation
+- [ ] Improve AI Generation Consistency
+   - [X] Use Llama Index
+   - [ ] Test Generation Consistency
+   - [X] Fix Number of Questions Generation Error
+   - [ ] Fix Identification
+- [ ] Update Logic for Exam Generation
+   - [ ] Make sure the Exam Doesn't Have Duplicate Question
+   - [ ] Try to generate in one go
+
+# Testing
+- [ ] Check for Consistency of Output Format
+- [ ] Check for Correctness of Answers
+- [ ] Check if Hallucinating Information
+    - [ ] Quizzes
+    - [ ] Exams
+
+
+# Converter
+- [ ] Add Exam Name
+- [ ] Test the File Types
+- [ ] Add Assessify Logo to the Generated Exam
+- [ ] Check if Moodle Quizzes and Exams are Correct
+- [X] Convert Assessment to a JSON
+- [X] Convert Assessment (JSON) to PDF
+- [X] Convert Assessment (JSON) to GIFT
 - [X] Update JSON to PDF
    - [X] JSON to PDF for Multiple Choice
    - [X] JSON to PDF for Identification
@@ -47,8 +70,3 @@
    - [X] JSON to GIFT for Fill in the Blanks
    - [X] JSON to GIFT for Essay
    - [X] JSON to GIFT for Exam
-- [ ] Improve AI Generation Consistency
-   - [ ] Use Llama Index
-   - [ ] Test Generation Consistency
-   - [ ] Fix Number of Questions Generation Error
-   - [ ] Fix Identification
