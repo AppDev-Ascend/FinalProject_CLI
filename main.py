@@ -16,11 +16,13 @@ number_of_questions = 10
 
 
 # Change Learning Outcomes Here
-learning_outcomes = [
-    "Understand what the Prototype Design Pattern is and how it is used in software development",
-    "Understand the concept and usage of the Prototype Design Pattern",
-    "Explain the benefits and drawbacks of using the Prototype Design Pattern"
-]
+# learning_outcomes = [
+#     "Understand what the Prototype Design Pattern is and how it is used in software development",
+#     "Understand the concept and usage of the Prototype Design Pattern",
+#     "Explain the benefits and drawbacks of using the Prototype Design Pattern"
+# ]
+
+learning_outcomes=[]
 
 # Generate a Quiz
 start_time = time.time()
