@@ -3,12 +3,16 @@ import openai
 import os
 import json
 import time
-from llama_index import VectorStoreIndex, SimpleDirectoryReader, Prompt
+from llama_index.llms import OpenAI
+from llama_index import VectorStoreIndex, SimpleDirectoryReader, ServiceContext, StorageContext, load_index_from_storage
 class AssessmentGenerator:
     
     def __init__(self):
         load_dotenv()
         openai.api_key = os.getenv("OPENAI_API_KEY")
+        llm = OpenAI(model="gpt-4")
+        self.service_context = ServiceContext.from_defaults(llm=llm)
+
 
 
     def read_excluded_questions(self, file_path):
@@ -22,11 +26,15 @@ class AssessmentGenerator:
         with open(file_path, 'w') as f:
             f.write(questions)
 
-    def get_quiz(self, assessment_type, number_of_questions, learning_outcomes, lesson="", exclude_questions=False, index=None) -> dict:
+    def get_quiz(self, assessment_type, number_of_questions, learning_outcomes, lesson="", exclude_questions=False, index_path=None) -> dict:
         
+        print("Generating Quiz...")
+        print(f"Assessment Type: {assessment_type}")
+        print(f"Number of Questions: {number_of_questions}")
+
         assessment = ""
 
-        if index is None:
+        if index_path is None:
             if lesson == "":
                 print("Loading the Documents")
                 documents = SimpleDirectoryReader(r"media\lessons").load_data()
@@ -36,24 +44,28 @@ class AssessmentGenerator:
                     f.write(lesson)
                 documents = SimpleDirectoryReader(lesson).load_data()
 
-            index = VectorStoreIndex.from_documents(documents)
-        
+            index = VectorStoreIndex.from_documents(documents, service_context=self.service_context)
+            index.storage_context.persist(persist_dir=index_path)
+        else:
+            print("Using the Index")
+            storage_context = StorageContext.from_defaults(persist_dir="media\index")
+            index = load_index_from_storage(storage_context, service_context=self.service_context)
 
         # Create response format
         match(assessment_type):
             case "Multiple Choice" | "multiple choice":
                 question = "multiple choice questions with important terms as an answer"
                 response_format = 'The result type should be provided in the following JSON data structure:\n\
-                                {\
-                                    "question": "Question", \
-                                    "options": ["Option 1", "Option 2", "Option 3", "Option 4"], \
-                                    "answer": Int Index \
+                                {\n\
+                                    "question": "Question", \n\
+                                    "options": ["Option 1", "Option 2", "Option 3", "Option 4"], \n\
+                                    "answer": Int Index \n\
                                 }\n\
                                 Separate each question with a new line.\n\
                                 Respond only with the output in the exact format specified, with no explanation or conversation.'
 
             case "Identification" | "identification" | "True or False" | "true or false":
-                question = "identification questions where answers are important terms" if assessment_type == "Identification" else "true or false questions"
+                question = "identify the terms" if assessment_type == "Identification" else "true or false questions"
                 response_format = 'The result type should be provided in the following JSON data structure:\n\
                                 {\
                                     "question": "Question", \
@@ -87,15 +99,18 @@ class AssessmentGenerator:
             my_prompt = f"Generate {number_of_questions} {question}.\n\n{response_format}"
         else:
             formatted_learning_outcomes = "\n".join(learning_outcomes)
-            my_prompt = f"Generate {number_of_questions} {question} that is aligned with these learning outcomes: \n\n {formatted_learning_outcomes}\n\n.{response_format}"
+            my_prompt = f"Generate {number_of_questions} {question} that is aligned with these learning outcomes: \n\n{formatted_learning_outcomes}.\n\n{response_format}"
         
         if exclude_questions:
-            my_prompt = my_prompt + "\n\n. Make sure the questions that are in the context are excluded.{response_format}"
+            my_prompt = my_prompt + "\n\n. Make sure the questions that are in the context are excluded."
         
+        print("Debugging: ", my_prompt)
         query_engine = index.as_query_engine()
         assessment = query_engine.query(my_prompt)
       
         assessment_str = str(assessment)
+        print("Debugging: ", assessment_str)
+        
         lines = assessment_str.splitlines()
         quiz = {
             "type": assessment_type,
@@ -114,6 +129,8 @@ class AssessmentGenerator:
     
     def get_exam(self, exam_format, lesson="") -> dict:
 
+        print("Generating Exam...")
+
         if lesson == "":
             documents = SimpleDirectoryReader(r"media\lessons").load_data()
         else:
@@ -131,7 +148,9 @@ class AssessmentGenerator:
 
         for section in exam_format:
             section_name, assessment_type, question_count, learning_outcomes = section
-            
+
+            print(f"Generating {section_name}...")
+
             # Can be removed if we moved to a better api
             time.sleep(20)
 

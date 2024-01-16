@@ -5,7 +5,8 @@ import json
 
 ai = AssessmentGenerator()
 
-# Change the quiz filters here
+# Generate a Quiz
+# Quiz Filters
 quiz_type = "Multiple Choice"
 # quiz_type = "Identification"
 # quiz_type = "True or False"
@@ -14,19 +15,16 @@ quiz_type = "Multiple Choice"
 
 number_of_questions = 10
 
-
 # Change Learning Outcomes Here
-# learning_outcomes = [
-#     "Understand what the Prototype Design Pattern is and how it is used in software development",
-#     "Understand the concept and usage of the Prototype Design Pattern",
-#     "Explain the benefits and drawbacks of using the Prototype Design Pattern"
-# ]
-
-learning_outcomes=[]
+learning_outcomes = [
+    "Understand what the Prototype Design Pattern is and how it is used in software development",
+    "Understand the concept and usage of the Prototype Design Pattern",
+    "Explain the benefits and drawbacks of using the Prototype Design Pattern"
+]
 
 # Generate a Quiz
 start_time = time.time()
-assessment_json = ai.get_quiz(quiz_type, number_of_questions, learning_outcomes=learning_outcomes)
+assessment_json = ai.get_quiz(quiz_type, number_of_questions, learning_outcomes=learning_outcomes, index_path="media\index\index.json")
 end_time = time.time()
 elapsed_time = end_time - start_time
 print(f"Elapsed time: {elapsed_time} seconds")
@@ -34,9 +32,11 @@ print(f"Elapsed time: {elapsed_time} seconds")
 # Generate an Exam
 
 # exam_format = [
-#     ("Test 1", "Multiple Choice", 5, ["Understand what the Prototype Design Pattern is and how it is used in software development"]),
-#     ("Test 3", "True or False", 5, ["Understand the concept and usage of the Prototype Design Pattern"]),
-#     ("Test 5","Essay", 3, ["Explain the benefits and drawbacks of using the Prototype Design Pattern"])
+#     ("Test 1", "Multiple Choice", 5, []),
+#     ("Test 2", "True or False", 5, []),
+#     ("Test 3","Essay", 3, []),
+#     ("Test 4", "Fill in the Blanks", 5, []),
+#     ("Test 5", "Identification", 5, [])
 # ]
 
 # # Start timer
@@ -51,9 +51,9 @@ print(f"Elapsed time: {elapsed_time} seconds")
 
 # Test the Converter
 
-# Quiz
-with open(fr'media\assessments\quiz_{quiz_type.lower().replace(" ", "_")}.json', 'r') as f:
-   assessment_json = json.load(f)
+# # Quiz to JSON
+# with open(fr'media\assessments\quiz_{quiz_type.lower().replace(" ", "_")}.json', 'r') as f:
+#    assessment_json = json.load(f)
 
 
 # # Convert the Assessment to a PDF
@@ -73,9 +73,9 @@ with open(fr'media\assessments\quiz_{quiz_type.lower().replace(" ", "_")}.json',
 # print("Converting Assessment to Word Document... \n\n")
 # Converter.quiz_to_docx(assessment_json)
 
-# # Exam
-# with open(fr'media\assessments\exam.json', 'r') as f:
-#     assessment_json = json.load(f)
+# Exam to JSON
+with open(fr'media\assessments\exam.json', 'r') as f:
+    assessment_json = json.load(f)
 
 
 # Convert the Exam to a PDF

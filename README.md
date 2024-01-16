@@ -70,3 +70,10 @@
    - [X] JSON to GIFT for Fill in the Blanks
    - [X] JSON to GIFT for Essay
    - [X] JSON to GIFT for Exam
+
+# Notes
+1. Number of Questions Generated is not correct sometimes. (It probably needs a few tries first before it finally makes the correct numbers)
+2. Questions generated get better after a few tries!
+3. The more the files are, the slower it will be!
+4. Exams are generated per test/quiz and should include learning outcomes for different tests. Add exclude questions for Exams to avoid duplicate questions. (Try first including it on a query, else put it on the lessons folder)
+5. Generating Assessments speed depends on the internet speed!
