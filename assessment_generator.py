@@ -10,7 +10,7 @@ class AssessmentGenerator:
     def __init__(self):
         load_dotenv()
         openai.api_key = os.getenv("OPENAI_API_KEY")
-        llm = OpenAI(model="gpt-4")
+        llm = OpenAI(model="gpt-4-1106-preview")
         self.service_context = ServiceContext.from_defaults(llm=llm)
 
     def read_excluded_questions(self, file_path):
@@ -24,7 +24,7 @@ class AssessmentGenerator:
         with open(file_path, 'w') as f:
             f.write(questions)
 
-    def get_quiz(self, username, assessment_type, number_of_questions, learning_outcomes, lesson="", exclude_questions=False, index=None, ) -> dict:
+    def get_quiz(self, username, assessment_type, number_of_questions, learning_outcomes, lesson="", exclude_questions=False, index=None) -> dict:
         
         print("Generating Quiz...")
         print(f"Assessment Type: {assessment_type}")
@@ -95,9 +95,8 @@ class AssessmentGenerator:
             my_prompt = f"Generate {number_of_questions} {question} that is aligned with these learning outcomes: \n\n{formatted_learning_outcomes}.\n\n{response_format}"
         
         if exclude_questions == True:
-            with open("media/lessons/excluded_questions.txt", 'r') as f:
-                existing_excluded_questions = f.read()
-            my_prompt = my_prompt + f"\n\n. Make sure that these questions are excluded: \n\n{existing_excluded_questions}."
+            existing_excluded_questions = self.read_excluded_questions(fr'media\{username}\lessons\excluded_questions.txt')
+            my_prompt = my_prompt + f"\n\nMake sure that these questions are excluded: \n\n{existing_excluded_questions}."
         
         print("Debugging: ", my_prompt)
         query_engine = index.as_query_engine()
@@ -114,18 +113,15 @@ class AssessmentGenerator:
 
         for line in lines:
             if line != "":
+                print("Line: ", line)
                 question = json.loads(line)
                 quiz["questions"].append(question)
 
                 if exclude_questions == True:
-                    with open("media/lessons/excluded_questions.txt", 'a') as f:
-                        f.write("\n" + question["question"])
+                    self.write_excluded_questions(fr'media\{username}\lessons\excluded_questions.txt', question["question"])
 
-        with open(fr'media\assessments\quiz_{assessment_type.lower().replace(" ", "_")}.json', 'w') as f:
+        with open(fr'media\{username}\assessments\quiz_{assessment_type.lower().replace(" ", "_")}.json', 'w') as f:
             json.dump(quiz, f)
-
-        
-        
         
         return quiz
     
@@ -159,7 +155,7 @@ class AssessmentGenerator:
             else:
                 exclude = False
 
-            questions = self.get_quiz(assessment_type, question_count, learning_outcomes, exclude_questions=exclude, index_path=index)
+            questions = self.get_quiz(username, assessment_type, question_count, learning_outcomes, exclude_questions=exclude, index=index)
             
             exam["sections"].append({
                 "name": section_name,
@@ -179,7 +175,7 @@ class AssessmentGenerator:
         # self.write_excluded_questions(excluded_questions_file_path, "")
 
         # Save exam to a json file
-        with open(fr'media\assessments\exam.json', 'w') as f:
+        with open(fr'media\{username}\assessments\exam.json', 'w') as f:
             json.dump(exam, f)
         
         return exam

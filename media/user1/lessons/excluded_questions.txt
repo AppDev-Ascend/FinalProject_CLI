@@ -1,11 +1,1 @@
-
-What is the Prototype Design Pattern?
-How is the Prototype Design Pattern used in software development?
-In which context can the Prototype Design Pattern be used?
-What is one benefit of using the Prototype Design Pattern in game development?
-When working with databases, what can the Prototype Design Pattern be used for?
-The Prototype Design Pattern is commonly used in game development to create new game characters by copying existing character templates.
-The Prototype Design Pattern can be used in graphical user interfaces to create copies of GUI components to save time and resources when generating similar UI elements.
-The Prototype Design Pattern is not applicable in database operations.
-The Prototype Design Pattern involves implementing cloning mechanisms to create new instances based on prototype objects.
-The Prototype Design Pattern requires clients to have knowledge of the specifics of object creation.
+What will happen if you attempt to clone an object that does not implement the Cloneable interface and override the clone() method?

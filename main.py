@@ -3,33 +3,35 @@ from converter import Converter
 import time
 import json
 
+username = "user1"
+
 ai = AssessmentGenerator()
 
 # Generate a Quiz
 # Quiz Filters
 # quiz_type = "Multiple Choice"
 # quiz_type = "Identification"
-quiz_type = "True or False"
+# quiz_type = "True or False"
 # quiz_type = "Fill in the Blanks"
-# quiz_type = "Essay"
+quiz_type = "Essay"
 
 number_of_questions = 10
 
 # Change Learning Outcomes Here
-learning_outcomes = [
-    "Understand what the Prototype Design Pattern is and how it is used in software development",
-    "Understand the concept and usage of the Prototype Design Pattern",
-    "Explain the benefits and drawbacks of using the Prototype Design Pattern"
-]
+# learning_outcomes = [
+#     "Understand what the Prototype Design Pattern is and how it is used in software development",
+#     "Understand the concept and usage of the Prototype Design Pattern",
+#     "Explain the benefits and drawbacks of using the Prototype Design Pattern"
+# ]
 
-learning_outcomes = []
+learning_outcomes = ["Understand the Observer Design Pattern"]
 
 # Generate a Quiz
-# start_time = time.time()
-# assessment_json = ai.get_quiz(quiz_type, number_of_questions, learning_outcomes=learning_outcomes, index_path="media\index\index.json")
-# end_time = time.time()
-# elapsed_time = end_time - start_time
-# print(f"Elapsed time: {elapsed_time} seconds")
+start_time = time.time()
+assessment_json = ai.get_quiz("user1", quiz_type, number_of_questions, learning_outcomes=learning_outcomes)
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f"Elapsed time: {elapsed_time} seconds")
 
 # Generate an Exam
 
@@ -41,15 +43,15 @@ exam_format = [
     ("Test 5", "Identification", 5, [])
 ]
 
-# # Start timer
-start_time = time.time()
+# # # Start timer
+# start_time = time.time()
 
-assessment_json = ai.get_exam("user1", exam_format)
+# assessment_json = ai.get_exam("user1", exam_format)
 
-# # End timer
-end_time = time.time()
-elapsed_time = end_time - start_time
-print(f"Elapsed time: {elapsed_time} seconds")
+# # # End timer
+# end_time = time.time()
+# elapsed_time = end_time - start_time
+# print(f"Elapsed time: {elapsed_time} seconds")
 
 # Test the Converter
 
@@ -76,8 +78,8 @@ print(f"Elapsed time: {elapsed_time} seconds")
 # Converter.quiz_to_docx(assessment_json)
 
 # Exam to JSON
-with open(fr'media\assessments\exam.json', 'r') as f:
-    assessment_json = json.load(f)
+# with open(fr'media\{username}\assessments\exam.json', 'r') as f:
+#     assessment_json = json.load(f)
 
 
 # Convert the Exam to a PDF

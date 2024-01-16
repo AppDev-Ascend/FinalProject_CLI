@@ -31,28 +31,27 @@
 - [X] Update JSON Format
 - [X] Check Format of New Assessment File Type
 - [X] Check the Exam Generation
-- [ ] Improve AI Generation Consistency
+- [X] Improve AI Generation Consistency
    - [X] Use Llama Index
-   - [ ] Test Generation Consistency
+   - [X] Test Generation Consistency
    - [X] Fix Number of Questions Generation Error
-   - [ ] Fix Identification
-- [ ] Update Logic for Exam Generation
-   - [ ] Make sure the Exam Doesn't Have Duplicate Question
-   - [ ] Try to generate in one go
+   - [X] Fix Identification
+- [X] Update Logic for Exam Generation
+   - [X] Make sure the Exam Doesn't Have Duplicate Question
+   - [X] Try to generate in one go
 
 # Testing
-- [ ] Check for Consistency of Output Format
-- [ ] Check for Correctness of Answers
-- [ ] Check if Hallucinating Information
-    - [ ] Quizzes
-    - [ ] Exams
-
+- [X] Check for Consistency of Output Format
+- [X] Check for Correctness of Answers
+- [X] Check if Hallucinating Information
+    - [X] Quizzes
+    - [X] Exams
 
 # Converter
-- [ ] Add Exam Name
-- [ ] Test the File Types
-- [ ] Add Assessify Logo to the Generated Exam
-- [ ] Check if Moodle Quizzes and Exams are Correct
+- [X] Add Exam Name
+- [X] Test the File Types
+- [X] Add Assessify Logo to the Generated Exam
+- [X] Check if Moodle Quizzes and Exams are Correct
 - [X] Convert Assessment to a JSON
 - [X] Convert Assessment (JSON) to PDF
 - [X] Convert Assessment (JSON) to GIFT
@@ -71,9 +70,6 @@
    - [X] JSON to GIFT for Essay
    - [X] JSON to GIFT for Exam
 
-# Notes
-1. Number of Questions Generated is not correct sometimes. (It probably needs a few tries first before it finally makes the correct numbers)
-2. Questions generated get better after a few tries!
-3. The more the files are, the slower it will be!
-4. Exams are generated per test/quiz and should include learning outcomes for different tests. Add exclude questions for Exams to avoid duplicate questions. (Try first including it on a query, else put it on the lessons folder)
-5. Generating Assessments speed depends on the internet speed!
+
+# Final Integration
+- [ ] When Creating a user, create a directory on media named user then put folders, assessments, lessons, and outputs 
