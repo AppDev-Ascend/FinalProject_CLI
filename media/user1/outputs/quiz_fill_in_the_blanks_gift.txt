@@ -1,0 +1,20 @@
+::Question::The prototype pattern is used to create new _______ by copying existing templates. is ___?
+= game characters
+::Question::In graphical user interfaces, the prototype pattern is used to create copies of ________ to save time and resources. is ___?
+= GUI components
+::Question::When working with databases, the prototype pattern is used to clone ________ records. is ___?
+= database
+::Question::The prototype pattern can be implemented using ________ mechanisms. is ___?
+= cloning
+::Question::The decision to use shallow or deep cloning depends on the ________ between objects. is ___?
+= relationships
+::Question::A prototype registry can be used when dealing with a large number of ________ objects. is ___?
+= prototype
+::Question::Prototype objects serve as ________ for creating new objects. is ___?
+= templates
+::Question::Prototype objects should be clear, complete, and well-documented, describing their properties, behaviors, and ________. is ___?
+= intended use
+::Question::The prototype pattern is useful for creating similar ________ with different attributes. is ___?
+= characters
+::Question::The prototype pattern can help save time and resources, especially when making something ________ or that takes a lot of effort. is ___?
+= difficult

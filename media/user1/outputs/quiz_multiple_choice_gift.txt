@@ -1,0 +1,25 @@
+::Question::What is the purpose of implementing the Cloneable interface in Java??
+= To indicate that an object can be safely cloned using the clone() method
+~ To provide a way to create a deep copy of an object
+~ To override the clone() method in the Object class
+~ To prevent the JVM from throwing a CloneNotSupportedException
+::Question::What happens if an object does not implement the Cloneable interface in Java??
+~ The object cannot be cloned using the clone() method
+~ The object will be automatically deep copied
+= The JVM will throw a CloneNotSupportedException
+~ The object will be shallow copied
+::Question::What is the result of attempting to clone an object without implementing the Cloneable interface and the clone() method??
+~ The object will be deep copied
+= The JVM will throw a CloneNotSupportedException
+~ The object will be shallow copied
+~ The object cannot be cloned
+::Question::What is the purpose of the clone() method in Java??
+= To create a deep copy of an object
+~ To indicate that an object can be safely cloned using the clone() method
+~ To override the clone() method in the Object class
+~ To prevent the JVM from throwing a CloneNotSupportedException
+::Question::Which approach closely mimics the Cloneable feature and is Java-specific??
+= Using the Cloneable interface
+~ Implementing a custom clone method
+~ Using the Serializable interface
+~ Using the Comparable interface

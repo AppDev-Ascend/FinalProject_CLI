@@ -1,0 +1,1 @@
+{"type": "True or False", "questions": [{"question": "The Prototype Design Pattern is used to create new instances by copying an existing 'prototype' or template, thus saving time and resources.", "answer": "True"}, {"question": "The Prototype Design Pattern is not useful when creating similar characters with different attributes in game development.", "answer": "False"}]}

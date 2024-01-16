@@ -7,9 +7,9 @@ ai = AssessmentGenerator()
 
 # Generate a Quiz
 # Quiz Filters
-quiz_type = "Multiple Choice"
+# quiz_type = "Multiple Choice"
 # quiz_type = "Identification"
-# quiz_type = "True or False"
+quiz_type = "True or False"
 # quiz_type = "Fill in the Blanks"
 # quiz_type = "Essay"
 
@@ -22,32 +22,34 @@ learning_outcomes = [
     "Explain the benefits and drawbacks of using the Prototype Design Pattern"
 ]
 
+learning_outcomes = []
+
 # Generate a Quiz
-start_time = time.time()
-assessment_json = ai.get_quiz(quiz_type, number_of_questions, learning_outcomes=learning_outcomes, index_path="media\index\index.json")
-end_time = time.time()
-elapsed_time = end_time - start_time
-print(f"Elapsed time: {elapsed_time} seconds")
-
-# Generate an Exam
-
-# exam_format = [
-#     ("Test 1", "Multiple Choice", 5, []),
-#     ("Test 2", "True or False", 5, []),
-#     ("Test 3","Essay", 3, []),
-#     ("Test 4", "Fill in the Blanks", 5, []),
-#     ("Test 5", "Identification", 5, [])
-# ]
-
-# # Start timer
 # start_time = time.time()
-
-# assessment_json = ai.get_exam(exam_format)
-
-# # # End timer
+# assessment_json = ai.get_quiz(quiz_type, number_of_questions, learning_outcomes=learning_outcomes, index_path="media\index\index.json")
 # end_time = time.time()
 # elapsed_time = end_time - start_time
 # print(f"Elapsed time: {elapsed_time} seconds")
+
+# Generate an Exam
+
+exam_format = [
+    ("Test 1", "Multiple Choice", 1, []),
+    ("Test 2", "True or False", 2, []),
+    ("Test 3","Essay", 3, []),
+    ("Test 4", "Fill in the Blanks", 4, []),
+    ("Test 5", "Identification", 5, [])
+]
+
+# # Start timer
+start_time = time.time()
+
+assessment_json = ai.get_exam("user1", exam_format)
+
+# # End timer
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f"Elapsed time: {elapsed_time} seconds")
 
 # Test the Converter
 

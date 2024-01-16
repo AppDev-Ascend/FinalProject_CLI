@@ -13,8 +13,6 @@ class AssessmentGenerator:
         llm = OpenAI(model="gpt-4")
         self.service_context = ServiceContext.from_defaults(llm=llm)
 
-
-
     def read_excluded_questions(self, file_path):
         if os.path.exists(file_path):
             with open(file_path, 'r') as f:
@@ -26,7 +24,7 @@ class AssessmentGenerator:
         with open(file_path, 'w') as f:
             f.write(questions)
 
-    def get_quiz(self, assessment_type, number_of_questions, learning_outcomes, lesson="", exclude_questions=False, index_path=None) -> dict:
+    def get_quiz(self, username, assessment_type, number_of_questions, learning_outcomes, lesson="", exclude_questions=False, index=None, ) -> dict:
         
         print("Generating Quiz...")
         print(f"Assessment Type: {assessment_type}")
@@ -34,44 +32,39 @@ class AssessmentGenerator:
 
         assessment = ""
 
-        if index_path is None:
+        if index is None:
             if lesson == "":
                 print("Loading the Documents")
-                documents = SimpleDirectoryReader(r"media\lessons").load_data()
+                documents = SimpleDirectoryReader(fr"media\{username}\lessons").load_data()
             else:
                 print("Storing the Lesson")
-                with open(r'media\lessons\lesson.txt', 'w') as f:
+                with open(fr'media\{username}\lessons\lesson.txt', 'w') as f:
                     f.write(lesson)
                 documents = SimpleDirectoryReader(lesson).load_data()
 
             index = VectorStoreIndex.from_documents(documents, service_context=self.service_context)
-            index.storage_context.persist(persist_dir=index_path)
-        else:
-            print("Using the Index")
-            storage_context = StorageContext.from_defaults(persist_dir="media\index")
-            index = load_index_from_storage(storage_context, service_context=self.service_context)
 
         # Create response format
         match(assessment_type):
             case "Multiple Choice" | "multiple choice":
                 question = "multiple choice questions with important terms as an answer"
                 response_format = 'The result type should be provided in the following JSON data structure:\n\
-                                {\n\
-                                    "question": "Question", \n\
-                                    "options": ["Option 1", "Option 2", "Option 3", "Option 4"], \n\
-                                    "answer": Int Index \n\
+                                {\
+                                    "question": "Question", \
+                                    "options": ["Option 1", "Option 2", "Option 3", "Option 4"], \
+                                    "answer": Int Index \
                                 }\n\
-                                Separate each question with a new line.\n\
+                                Separate each question with a these symbols >>>.\n\
                                 Respond only with the output in the exact format specified, with no explanation or conversation.'
 
             case "Identification" | "identification" | "True or False" | "true or false":
-                question = "identify the terms" if assessment_type == "Identification" else "true or false questions"
+                question = "identification question" if assessment_type == "Identification" else "true or false questions"
                 response_format = 'The result type should be provided in the following JSON data structure:\n\
                                 {\
                                     "question": "Question", \
                                     "answer": "Answer" \
                                 }\n\
-                                Do not include numbers in the questions. Separate each question with a new line.\n\
+                                Do not include numbers in the questions. Separate each question with a these symbols >>>.\n\
                                 Respond only with the output in the exact format specified, with no explanation or conversation.'
 
             case "Fill in the Blanks" | "fill in the blanks":
@@ -81,7 +74,7 @@ class AssessmentGenerator:
                                     "question": "Question with blank", \
                                     "answer": "Answer" \
                                 }\n\
-                                Do not include numbers in the questions. Separate each question with a new line.\n\
+                                Do not include numbers in the questions. Separate each question with a these symbols >>>.\n\
                                 Respond only with the output in the exact format specified, with no explanation or conversation.'
             case "Essay" | "essay":
                 question = "essay questions"
@@ -89,7 +82,7 @@ class AssessmentGenerator:
                                 { \
                                     "question": "Question", \
                                 }\n\
-                                Do not include numbers in the questions. Separate each question with a new line.\n\
+                                Do not include numbers in the questions. Separate each question with a these symbols >>>.\n\
                                 Respond only with the output in the exact format specified, with no explanation or conversation.'
             case _:
                 pass                        
@@ -101,8 +94,10 @@ class AssessmentGenerator:
             formatted_learning_outcomes = "\n".join(learning_outcomes)
             my_prompt = f"Generate {number_of_questions} {question} that is aligned with these learning outcomes: \n\n{formatted_learning_outcomes}.\n\n{response_format}"
         
-        if exclude_questions:
-            my_prompt = my_prompt + "\n\n. Make sure the questions that are in the context are excluded."
+        if exclude_questions == True:
+            with open("media/lessons/excluded_questions.txt", 'r') as f:
+                existing_excluded_questions = f.read()
+            my_prompt = my_prompt + f"\n\n. Make sure that these questions are excluded: \n\n{existing_excluded_questions}."
         
         print("Debugging: ", my_prompt)
         query_engine = index.as_query_engine()
@@ -111,7 +106,7 @@ class AssessmentGenerator:
         assessment_str = str(assessment)
         print("Debugging: ", assessment_str)
         
-        lines = assessment_str.splitlines()
+        lines = assessment_str.split(">>>")
         quiz = {
             "type": assessment_type,
             "questions": []
@@ -122,41 +117,50 @@ class AssessmentGenerator:
                 question = json.loads(line)
                 quiz["questions"].append(question)
 
+                if exclude_questions == True:
+                    with open("media/lessons/excluded_questions.txt", 'a') as f:
+                        f.write("\n" + question["question"])
+
         with open(fr'media\assessments\quiz_{assessment_type.lower().replace(" ", "_")}.json', 'w') as f:
             json.dump(quiz, f)
+
+        
+        
         
         return quiz
     
-    def get_exam(self, exam_format, lesson="") -> dict:
+    def get_exam(self, username, exam_format, lesson="") -> dict:
 
         print("Generating Exam...")
 
         if lesson == "":
-            documents = SimpleDirectoryReader(r"media\lessons").load_data()
+                print("Loading the Documents")
+                documents = SimpleDirectoryReader(fr"media\{username}\lessons").load_data()
         else:
-            with open(r'media\upload\lesson.txt', 'w') as f:
+            print("Storing the Lesson")
+            with open(fr'media\{username}\lessons\lesson.txt', 'w') as f:
                 f.write(lesson)
             documents = SimpleDirectoryReader(lesson).load_data()
-        index = VectorStoreIndex.from_documents(documents)
+        
+        index = VectorStoreIndex.from_documents(documents, service_context=self.service_context)
 
         exam = {
             "type": "Exam",
             "sections": []
         }
 
-        excluded_questions = ""
-
         for section in exam_format:
             section_name, assessment_type, question_count, learning_outcomes = section
 
             print(f"Generating {section_name}...")
 
-            # Can be removed if we moved to a better api
-            time.sleep(20)
+            if learning_outcomes == []:
+                exclude = True
+            else:
+                exclude = False
 
-            questions = self.get_quiz(assessment_type, question_count, learning_outcomes, exclude_questions=False, index=index)
+            questions = self.get_quiz(assessment_type, question_count, learning_outcomes, exclude_questions=exclude, index_path=index)
             
-
             exam["sections"].append({
                 "name": section_name,
                 "type": assessment_type,

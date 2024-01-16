@@ -1,0 +1,30 @@
+::Question::What is the Prototype Design Pattern??
+= True
+~ False
+::Question::Is the Prototype Design Pattern used in software development??
+= True
+~ False
+::Question::Does the Prototype Design Pattern involve creating copies of existing objects??
+= True
+~ False
+::Question::Is the Prototype Design Pattern useful for creating similar objects with different attributes??
+= True
+~ False
+::Question::Can the Prototype Design Pattern be used in game development??
+= True
+~ False
+::Question::Can the Prototype Design Pattern be used in graphical user interfaces??
+= True
+~ False
+::Question::Does the Prototype Design Pattern involve cloning database records??
+= True
+~ False
+::Question::Are there benefits to using the Prototype Design Pattern??
+= True
+~ False
+::Question::Are there drawbacks to using the Prototype Design Pattern??
+= True
+~ False
+::Question::Is it important to document and train team members in the use of the Prototype Design Pattern??
+= True
+~ False

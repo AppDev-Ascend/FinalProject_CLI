@@ -1,0 +1,55 @@
+{
+    "type": "Multiple Choice",
+    "questions": [
+        {
+            "question": "What is Transcreation?",
+            "options": [
+                "A. The process of translating a text from one language to another",
+                "B. The process of adapting a text to a different cultural and linguistic context",
+                "C. The process of interpreting a text in multiple ways",
+                "D. The process of creating a new text from scratch"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "What is the role of a Transcreator?",
+            "options": [
+                "A. To translate a text word-for-word",
+                "B. To interpret a text in multiple ways",
+                "C. To adapt a text to a different cultural and linguistic context",
+                "D. To create a new text from scratch"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "How does Transcreation impact interpretation?",
+            "options": [
+                "A. It enhances the accuracy of interpretation",
+                "B. It simplifies the interpretation process",
+                "C. It adds cultural and linguistic nuances to the interpretation",
+                "D. It eliminates the need for interpretation"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "What is the relevance of Transcreation?",
+            "options": [
+                "A. It is only relevant in certain industries",
+                "B. It is irrelevant in today's globalized world",
+                "C. It helps bridge cultural and linguistic gaps in communication",
+                "D. It is primarily used for literary purposes"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "Which of the following is an example of Transcreation?",
+            "options": [
+                "A. Translating a legal document",
+                "B. Adapting a marketing slogan for a different market",
+                "C. Interpreting a conversation between two people",
+                "D. Creating a new language"
+            ],
+            "answer": 2
+        }
+    ]
+}
